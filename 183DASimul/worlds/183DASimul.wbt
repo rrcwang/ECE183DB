@@ -26,7 +26,7 @@ Robot {
       version "Puck Hi-Res"
     }
     Pioneer3at {
-      controller "epuck_go_forward"
+      controller "frisbot_controller"
     }
   ]
   physics Physics {

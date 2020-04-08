@@ -64,7 +64,7 @@
 ### VERBOSE = 1
 ###
 ###-----------------------------------------------------------------------------
-C_SOURCES = robot_init.c frisbot_controller.c
+C_SOURCES = robot_init.c frisbot_controller.c robot_actuators.c
 ### Do not modify: this includes Webots global Makefile.include
 space :=
 space +=

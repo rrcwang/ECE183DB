@@ -12,12 +12,12 @@
  */
 
 #include "robot_init.h"
+#include "robot_actuators.h"
 
 /*
  * You may want to add macros here.
  */
 #define TIME_STEP 64
-#define MAX_SPEED 10
 
 /*
  * This is the main program.
@@ -53,6 +53,7 @@ int main(int argc, char **argv) {
      * Enter here functions to send actuator commands, like:
      * wb_motor_set_position(my_actuator, 10.0);
      */
+    forward(MAX_SPEED);
   };
 
   /* Enter your cleanup code here */
