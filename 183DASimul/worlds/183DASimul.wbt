@@ -1,0 +1,35 @@
+#VRML_SIM R2020a utf8
+WorldInfo {
+}
+Viewpoint {
+  orientation -0.6266382073673621 -0.7715868924010171 -0.10944507545961404 0.49533025104455985
+  position -0.7025076265320286 0.7037393956935195 1.4586272395766353
+}
+TexturedBackground {
+}
+TexturedBackgroundLight {
+}
+RectangleArena {
+  translation 0 0.01 0
+  floorSize 10 10
+  floorTileSize 10 10
+  floorAppearance RoughConcrete {
+  }
+  wallHeight 1
+  wallAppearance CementTiles {
+  }
+}
+Robot {
+  children [
+    VelodynePuck {
+      translation 0 0.31 0
+      version "Puck Hi-Res"
+    }
+    Pioneer3at {
+      controller "epuck_go_forward"
+    }
+  ]
+  physics Physics {
+  }
+  controller ""
+}
