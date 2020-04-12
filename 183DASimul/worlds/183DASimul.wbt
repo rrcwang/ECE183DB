@@ -2,8 +2,8 @@
 WorldInfo {
 }
 Viewpoint {
-  orientation -0.6266382073673621 -0.7715868924010171 -0.10944507545961404 0.49533025104455985
-  position -0.7025076265320286 0.7037393956935195 1.4586272395766353
+  orientation 0.06072867234062478 0.9897048242627238 0.12960088420545782 3.9635588494081064
+  position -0.1766931141306558 0.14439982550614971 -0.1870265759034691
 }
 TexturedBackground {
 }
@@ -19,17 +19,6 @@ RectangleArena {
   wallAppearance CementTiles {
   }
 }
-Robot {
-  children [
-    VelodynePuck {
-      translation 0 0.31 0
-      version "Puck Hi-Res"
-    }
-    Pioneer3at {
-      controller "frisbot_controller"
-    }
-  ]
-  physics Physics {
-  }
-  controller ""
+Altino {
+  translation 0 0.036 0
 }
