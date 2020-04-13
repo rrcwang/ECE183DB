@@ -1,6 +1,7 @@
 # FrisPy3
 
 Based on FrisPy by Tom McClintock | tmcclintock/FrisPy
+
 Translated to Python 3 by Richard W.
 
 
@@ -24,9 +25,9 @@ FrisPy takes 12 inital conditions values, defined in a tab-separated values file
 #x  y   z   vx  vy  vz  phi theta   gamma   phidot  thetadot    gammadot
 ```
 
-* [__x, y, z__] are Cartesian coordinates.
-* [__vx, vy, vz__] are the velocities in each of the previous directions.
-* [__phi, theta, gamma__] are the Euler angles rotated through x, y', and z'' in successive order.
-* [__phidot, thetadot, gammadot__] are the angular velocities in each of the previous directions.
+* [_x, y, z_] are Cartesian coordinates.
+* [_vx, vy, vz_] are the velocities in each of the previous directions.
+* [_phi, theta, gamma_] are the Euler angles rotated through x, y', and z'' in successive order.
+* [_phidot, thetadot, gammadot_] are the angular velocities in each of the previous directions.
 
 Rigorious definitions of phi, theta, and gamma can be found in Elizabeth Hannah's paper __[Constraining frisbee tracking methods through Bayesian analysis of flying disc models](https://repository.arizona.edu/handle/10150/626742)__.
