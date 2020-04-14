@@ -2,8 +2,8 @@
 WorldInfo {
 }
 Viewpoint {
-  orientation 0.06072867234062478 0.9897048242627238 0.12960088420545782 3.9635588494081064
-  position -0.1766931141306558 0.14439982550614971 -0.1870265759034691
+  orientation -0.11902232897749582 -0.9833113120129622 -0.13759559902889193 1.7754022791115953
+  position -3.077946391033701 1.2188741228233269 -0.6669561764184831
 }
 TexturedBackground {
 }
@@ -20,5 +20,24 @@ RectangleArena {
   }
 }
 Altino {
-  translation 0 0.036 0
+  translation 0 0.026 0
+}
+CardboardBox {
+  translation 1.25 0.16 1.22
+  name "cardboard box(1)"
+  size 0.3 0.3 0.3
+}
+CardboardBox {
+  translation 0.36 0.16 -0.77
+  name "cardboard box(2)"
+  size 0.3 0.3 0.3
+}
+CardboardBox {
+  translation 1.97 0.16 0
+  size 0.3 0.3 0.3
+}
+SolidTorus {
+  translation 0 0.95 0.16
+  majorRadius 0.1
+  minorRadius 0.05
 }

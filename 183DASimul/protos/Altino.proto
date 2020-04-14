@@ -106,9 +106,11 @@ PROTO Altino [
         type "radio"
       }
       Lidar {
+        tiltAngle 1.57
         translation 0 0.04 0.05
         rotation 0 1 0 0
         name "lidar"
+        numberOfLayers 512
         children [
           Shape {
             appearance Appearance {
@@ -123,7 +125,7 @@ PROTO Altino [
           }
         ]
         verticalFieldOfView 3.14
-        maxRange 300
+        maxRange 10
       }
       LED {
         name "headlights"
