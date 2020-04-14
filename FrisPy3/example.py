@@ -20,5 +20,6 @@ try:
     ax = fig.add_subplot(111, projection='3d')
     
     fig.show()
+    print(times)
 except Exception:
     print("Matplotplot not installed. Cannot visualize example.")
