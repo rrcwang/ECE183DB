@@ -2,8 +2,9 @@
 WorldInfo {
 }
 Viewpoint {
-  orientation -0.11902232897749582 -0.9833113120129622 -0.13759559902889193 1.7754022791115953
-  position -3.077946391033701 1.2188741228233269 -0.6669561764184831
+  orientation -0.007184257767568894 -0.9877582084279329 -0.15582717389328898 3.0896334289386873
+  position -0.3678364386894766 1.8500503726689481 -3.620265791148246
+  follow "vehicle"
 }
 TexturedBackground {
 }
@@ -12,15 +13,25 @@ TexturedBackgroundLight {
 RectangleArena {
   translation 0 0.01 0
   floorSize 10 10
-  floorTileSize 10 10
+  floorTileSize 5 5
   floorAppearance RoughConcrete {
   }
   wallHeight 1
   wallAppearance CementTiles {
   }
 }
-Altino {
-  translation 0 0.026 0
+SolidBox {
+  translation 0 1 0
+  size 0.5 1e-12 0.5
+}
+SolidTorus {
+  translation 0.98 1.15 0.81
+  majorRadius 0.1
+  minorRadius 0.05
+}
+PortraitPainting {
+  translation 0 0.152934 4.5106
+  rotation 1 0 0 -1.8325953071795862
 }
 CardboardBox {
   translation 1.25 0.16 1.22
@@ -36,8 +47,7 @@ CardboardBox {
   translation 1.97 0.16 0
   size 0.3 0.3 0.3
 }
-SolidTorus {
-  translation 0 0.95 0.16
-  majorRadius 0.1
-  minorRadius 0.05
+Altino {
+  translation 0 0.036 0
+  rotation 0 1 0 0
 }
