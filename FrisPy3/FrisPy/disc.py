@@ -298,7 +298,7 @@ class Disc(object):
     coordinates = self.get_coordinates()
     flight_time = time_final-time_initial
     N_times = int(flight_time/dt)
-    times = np.linspace(time_initial,time_final,N_times)
+    times = np.linspace(time_initial,time_final,N_times + 1)  # linspace did not match arbitrary times given, off by 1
     if full_trajectory:
         return times, odeint(self.equations_of_motion,coordinates,times)
     else:
