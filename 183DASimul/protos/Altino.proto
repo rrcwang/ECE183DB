@@ -5,8 +5,8 @@
 # The "ALTINO System" is a robot platform designed for education. It is a four-wheeled robot based on an Ackermann vehicle frame.
 
 PROTO Altino [
-  field SFVec3f    translation     0 0.016 0               # Is `Transform.translation`.
-  field SFRotation rotation        0 1 0 1.5708            # Is `Transform.rotation`.
+  field SFVec3f    translation     0 0.027 -4.2            # Is `Transform.translation`.
+  field SFRotation rotation        0 1 0 0                 # Is `Transform.rotation`.
   field SFString   name            "vehicle"               # Is `Solid.name`.
   field SFString   controller      "altino_controller" # Is `Robot.controller`.
   field SFString   controllerArgs  ""                      # Is `Robot.controllerArgs`.
@@ -105,28 +105,39 @@ PROTO Altino [
       Receiver {
         type "radio"
       }
-      Lidar {
-        tiltAngle 1.57
-        translation 0 0.04 0.05
-        rotation 0 1 0 0
-        name "lidar"
-        numberOfLayers 512
-        children [
-          Shape {
-            appearance Appearance {
-              material Material {
-                diffuseColor 0.8 0.07 0.1
+      RangeFinder {
+          translation 0 0.04 0.05
+          rotation 1 0 0 1.57
+          name "range finder"
+          children [
+            Shape {
+              appearance Appearance {
+                material Material {
+                  diffuseColor 0.8 0.07 0.1
+                }
+              }
+              geometry Cylinder {
+                height 0.01
+                radius 0.01
               }
             }
-            geometry Cylinder {
-              height 0.01
-              radius 0.01
-            }
-          }
-        ]
-        verticalFieldOfView 3.14
-        maxRange 10
+          ]
+          fieldOfView 1.4  # = 80 [deg]
+          minRange 0.4
+          maxRange 30
+          width 1024
+          height 544
+          noise 0
       }
+      Camera {
+          translation 0 0.04 0.05
+          rotation 1 0 0 1.57
+          name "camera"
+          fieldOfView 1.4  # = 80 [deg]
+          width 1024
+          height 544
+          noise 0
+        }
       GPS {
       name "gps"
       }

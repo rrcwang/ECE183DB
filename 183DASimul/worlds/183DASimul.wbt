@@ -2,9 +2,9 @@
 WorldInfo {
 }
 Viewpoint {
-  orientation -0.007184257767568894 -0.9877582084279329 -0.15582717389328898 3.0896334289386873
-  position -0.3678364386894766 1.8500503726689481 -3.620265791148246
-  follow "vehicle"
+  orientation -0.0001325700900345358 -0.9907675571352177 -0.13557149461994022 3.1845902677680256
+  position 0.18543876176991056 1.1918507681500787 -6.67022310502177
+  followType "Mounted Shot"
 }
 TexturedBackground {
 }
@@ -16,38 +16,22 @@ RectangleArena {
   floorTileSize 5 5
   floorAppearance RoughConcrete {
   }
-  wallHeight 1
+  wallThickness 0
   wallAppearance CementTiles {
   }
 }
-SolidBox {
-  translation 0 1 0
-  size 0.5 1e-12 0.5
-}
-SolidTorus {
-  translation 0.98 1.15 0.81
-  majorRadius 0.1
-  minorRadius 0.05
-}
-PortraitPainting {
-  translation 0 0.152934 4.5106
-  rotation 1 0 0 -1.8325953071795862
-}
-CardboardBox {
-  translation 1.25 0.16 1.22
-  name "cardboard box(1)"
-  size 0.3 0.3 0.3
-}
-CardboardBox {
-  translation 0.36 0.16 -0.77
-  name "cardboard box(2)"
-  size 0.3 0.3 0.3
-}
-CardboardBox {
-  translation 1.97 0.16 0
-  size 0.3 0.3 0.3
+Solid {
+  translation 0 0.59 -4.15
+  children [
+    Shape {
+      appearance Appearance {
+      }
+      geometry Cylinder {
+        height 1e-07
+        radius 0.05
+      }
+    }
+  ]
 }
 Altino {
-  translation 0 0.036 0
-  rotation 0 1 0 0
 }
