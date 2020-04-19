@@ -12,7 +12,7 @@ TexturedBackgroundLight {
 RectangleArena {
   translation 0 0.01 0
   floorSize 10 10
-  floorTileSize 10 10
+  floorTileSize 5 5
   floorAppearance RoughConcrete {
   }
   wallHeight 1

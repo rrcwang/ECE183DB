@@ -127,6 +127,9 @@ PROTO Altino [
         verticalFieldOfView 3.14
         maxRange 10
       }
+      GPS {
+      name "gps"
+      }
       LED {
         name "headlights"
         color 1 1 0.66667
@@ -278,7 +281,7 @@ PROTO Altino [
         }
       ]
     }
-    physics                 Physics { density -1 mass 2 }
+    physics                 Physics { density -1 mass 10 }
     radarCrossSection       100
     wheelFrontRight         AltinoWheel { name "front right wheel" }
     wheelFrontLeft          AltinoWheel { name "front left wheel"}
@@ -294,6 +297,6 @@ PROTO Altino [
     engineMinRPM            1
     engineMaxRPM            250
     gearRatio               [-30 30]
-    maxWheelVelocity         29.8
+    maxWheelVelocity        100
   }
 }
