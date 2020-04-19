@@ -7,7 +7,7 @@ from controller import Motor
 from controller import Keyboard
 from altino import Altino
 import csv
-import cv2
+import opencv as cv2
 import xlsxwriter
 
 def log_gps_data(time, vector):
