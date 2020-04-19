@@ -22,13 +22,14 @@ class Altino(Robot):
         self.right_steer = self.getMotor('right_steer')
 
         # get sensors
-        self.lidar = self.getLidar('lidar')
         self.gps = self.getGPS('gps')
+        self.range_finder = self.getRangeFinder('range finder')
+        self.camera = self.getCamera('camera')
 
     # Motor Functions
-    def forward(self, velocity):
-        """turns all wheels forward at specified velocity"""
-        if velocity <= self.maxSpeed:
+    def set_speed(self, velocity):
+        """turns all wheels at specified velocity"""
+        if self.maxSpeed*-1 <= velocity <= self.maxSpeed:
             Motor.setPosition(self.front_left_motor, float('inf'))
             Motor.setPosition(self.front_right_motor, float('inf'))
             Motor.setPosition(self.back_left_motor, float('inf'))
@@ -41,21 +42,6 @@ class Altino(Robot):
         else:
             print("error: requested speed exceeds max speed: ", self.maxSpeed)
 
-    def back(self, velocity):
-        """turns all wheels backwards at specified velocity"""
-        if velocity <= self.maxSpeed:
-            Motor.setPosition(self.front_left_motor, float('inf'))
-            Motor.setPosition(self.front_right_motor, float('inf'))
-            Motor.setPosition(self.back_left_motor, float('inf'))
-            Motor.setPosition(self.back_right_motor, float('inf'))
-
-            Motor.setVelocity(self.front_left_motor, -1*velocity)
-            Motor.setVelocity(self.front_right_motor, -1*velocity)
-            Motor.setVelocity(self.back_left_motor, -1*velocity)
-            Motor.setVelocity(self.back_right_motor, -1*velocity)
-        else:
-            print("error: requested speed exceeds max speed: ", self.maxSpeed)
-
     def set_steer(self, angle):
         """sets angle of front wheels"""
         if  self.minSteer <= angle <= self.maxSteer:
@@ -65,5 +51,6 @@ class Altino(Robot):
     # Sensor Functions
     def enable_sensors(self):
         """enables all sensors"""
-        self.lidar.enable(32)
         self.gps.enable(32)
+        self.range_finder.enable(32)
+        self.camera.enable(32)

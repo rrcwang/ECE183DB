@@ -2,8 +2,14 @@
 WorldInfo {
 }
 Viewpoint {
+<<<<<<< HEAD
+  orientation -0.0001325700900345358 -0.9907675571352177 -0.13557149461994022 3.1845902677680256
+  position 0.18543876176991056 1.1918507681500787 -6.67022310502177
+  followType "Mounted Shot"
+=======
   orientation 0.02758612630225911 -0.975093525256555 -0.2200718578973241 3.412566487512149
   position 1.9462752011611881 1.9255860841656767 -4.091513283057095
+>>>>>>> d283ffe0c2b14a1b5751679947811977e32ef702
 }
 TexturedBackground {
 }
@@ -15,10 +21,26 @@ RectangleArena {
   floorTileSize 5 5
   floorAppearance RoughConcrete {
   }
-  wallHeight 1
+  wallThickness 0
   wallAppearance CementTiles {
   }
 }
+<<<<<<< HEAD
+Solid {
+  translation 0 0.59 -4.15
+  children [
+    Shape {
+      appearance Appearance {
+      }
+      geometry Cylinder {
+        height 1e-07
+        radius 0.05
+      }
+    }
+  ]
+}
+Altino {
+=======
 Altino {
   hidden position_0_0 -4.075353336047139e-15
   hidden position2_0_0 -2.02441500346913e-10
@@ -55,4 +77,5 @@ CardboardBox {
 }
 DEF test_frisbee Frisbee {
   translation -0.84 0.06 0.37
+>>>>>>> d283ffe0c2b14a1b5751679947811977e32ef702
 }
