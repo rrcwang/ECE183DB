@@ -49,11 +49,13 @@ def get_trajectory(disc, times=None, full_trajectory=False):
 
     """
     if times is None:
-        print("No trajectory times supplied. Integrating for 3 seconds with dt=1 ms.")
-        ti, tf = 0, 3.
+        print("No trajectory times supplied. Integrating for 30 seconds with dt=1 ms.")
+        ti, tf = 0, 30.
         dt = 0.001
     else:
         ti, tf = times[0], times[-1]
+        
+        print("tf" + str(tf))
         dt = times[1] - times[0]
     if not disc.has_model:
         print("Initializing disc with default model.")
