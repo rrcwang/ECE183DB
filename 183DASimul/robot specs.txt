@@ -1,7 +1,0 @@
-Robot Specs:
-
-Model - Saeon Altino
-
-Sensors:
-	gps
-	Multisense S7- Camera and Range Finder

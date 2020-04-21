@@ -1,0 +1,11 @@
+Webots Proto Cache File version 1.4
+protoFileHash: 881fd79fdf78d97a057bc2b11c531a42
+containsDevices: 0
+baseType: Robot
+slotType: 
+parameters: translation,scale,rotation,name,physics,locked,supervisor,controller
+tags: 
+license: 
+licenseUrl: 
+documentationUrl: 
+info: Frisbee\n

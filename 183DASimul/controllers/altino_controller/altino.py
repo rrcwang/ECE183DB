@@ -2,8 +2,10 @@
 
 from controller import Robot
 from controller import Motor
-from controller import Lidar
+from controller import Camera
+import math
 
+# Altino Robot Class
 class Altino(Robot):
 
     def __init__(self):
@@ -25,6 +27,10 @@ class Altino(Robot):
         self.gps = self.getGPS('gps')
         self.range_finder = self.getRangeFinder('range finder')
         self.camera = self.getCamera('camera')
+        self.camera_led = self.getLED('camera led')
+
+        # get display and attach camera
+        self.display = self.getDisplay('display')
 
     # Motor Functions
     def set_speed(self, velocity):
@@ -54,3 +60,4 @@ class Altino(Robot):
         self.gps.enable(32)
         self.range_finder.enable(32)
         self.camera.enable(32)
+        self.camera_led.set(1)

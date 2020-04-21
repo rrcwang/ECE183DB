@@ -1,9 +1,9 @@
 Webots Proto Cache File version 1.4
-protoFileHash: 9c41c3c2133fc31023fd449c657ab5a1
+protoFileHash: a5e2edc276e09ad4fb356cf40c31ae0f
 containsDevices: 1
 baseType: Robot
 slotType: 
-parameters: translation,rotation,name,controller,controllerArgs,synchronization,color
+parameters: translation,sensor_translation,rotation,sensor_rotation,name,controller,controllerArgs,synchronization,color
 tags: 
 license:  Copyright Cyberbotics Ltd. Licensed for use only with Webots.
 licenseUrl:  https://cyberbotics.com/webots_assets_license
