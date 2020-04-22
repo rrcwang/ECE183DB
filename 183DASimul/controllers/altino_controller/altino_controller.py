@@ -5,10 +5,11 @@
 from controller import Robot
 from controller import Motor
 from controller import Keyboard
-from altino import Altino
+import altino as al
+import camera_detection as cd
+import numpy as np
 import csv
 import cv2
-import numpy as np
 
 def log_gps_data(time, vector):
     with open('gps_log.csv', 'a', newline='') as file:
@@ -20,8 +21,7 @@ def log_range_data(image):
 
 
 # create the Robot instance.
-altino = Altino()
-
+altino = al.Altino()
 # clear logs, add column headers
 f = open('gps_log.csv', "w+")
 with open('gps_log.csv', 'a', newline='') as file:
@@ -51,9 +51,10 @@ while altino.step(timestep) != -1:
     # Enter here functions to read sensor data, like:
     #  val = ds.getValue()    
 
-    gps_data = altino.gps.getValues()
-    log_gps_data(current_time, gps_data)
-    range_data = altino.range_finder.getRangeImageArray()
+    gps_data      = altino.gps.getValues()
+    range_data    = altino.range_finder.getRangeImageArray()
+    altino.camera.getImage()
+    camera_status = altino.camera.saveImage('frame.png', 0)
     current_time += timestep
     
     key = keyboard.getKey()
@@ -62,13 +63,17 @@ while altino.step(timestep) != -1:
     elif key == Keyboard.DOWN:
         log_range_data(range_data)
     elif key == Keyboard.LEFT:
-        steer -= 0.2
+        if steer - 0.2 >= altino.minSteer:
+            steer -= 0.2
     elif key == Keyboard.RIGHT:
-        steer += 0.2
+        if steer + 0.2 <= altino.maxSteer:
+            steer += 0.2
     else:
         altino.set_speed(0)
     altino.set_steer(steer)
     # Process sensor data here.
+    log_gps_data(current_time, gps_data)
+    cd.cv_detect(altino, range_data)
 
     # Enter here functions to send actuator commands, like:
     #  motor.setPosition(10.0)
