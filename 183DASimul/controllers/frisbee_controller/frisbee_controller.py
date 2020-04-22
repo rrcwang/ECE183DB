@@ -13,7 +13,7 @@ timestep = int(supervisor.getBasicTimeStep())
 print(timestep)
 
 # instantiate object handles for the frisbee
-frisbee_node = supervisor.getFromDef("test_frisbee")
+frisbee_node = supervisor.getFromDef("frisbee")
 trans_field = frisbee_node.getField("translation")
 rotation_field = frisbee_node.getField("rotation")
 

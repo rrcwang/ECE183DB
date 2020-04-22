@@ -19,9 +19,9 @@ RectangleArena {
   wallAppearance CementTiles {
   }
 }
-Frisbee {
+DEF frisbee Frisbee {
   translation 0 0.8 -4.15
-  controller "void"
+  controller "frisbee_controller"
 }
 Altino {
 }
