@@ -56,21 +56,22 @@ while altino.step(timestep) != -1:
     altino.camera.getImage()
     camera_status = altino.camera.saveImage('frame.png', 0)
     current_time += timestep
+    radius = float('inf')
     
     key = keyboard.getKey()
     if key == Keyboard.UP:
         altino.set_speed(50)
     elif key == Keyboard.DOWN:
-        log_range_data(range_data)
+        altino.set_speed(-20)
     elif key == Keyboard.LEFT:
-        if steer - 0.2 >= altino.minSteer:
-            steer -= 0.2
+        radius = -0.3
+        altino.set_speed(0)
     elif key == Keyboard.RIGHT:
-        if steer + 0.2 <= altino.maxSteer:
-            steer += 0.2
+        radius = 0.5
+        altino.set_speed(20)
     else:
         altino.set_speed(0)
-    altino.set_steer(steer)
+    altino.set_steer(radius)
     # Process sensor data here.
     log_gps_data(current_time, gps_data)
     cd.cv_detect(altino, range_data)

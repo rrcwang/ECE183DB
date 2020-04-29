@@ -22,8 +22,10 @@ def img_to_cart(img, row, col):
 
 def cv_detect(altino, range_data):
     """Update Computer Vision Display with new image"""
-    g_lower = np.array([20, 100, 20])
-    g_upper = np.array([120, 255, 140])
+    g_lower = np.array([20, 120, 20])
+    g_upper = np.array([100, 255, 100])
+    g_dark_lower = np.array([])
+    g_dark_upper = np.array([])
 
     # process image
     frame = cv2.imread("frame.png", 1)
@@ -45,7 +47,6 @@ def cv_detect(altino, range_data):
 
     # calculate frisbee position
     coords = img_to_cart(range_data, 2*int(px), 2*int(py))
-    print(coords)
 
 def get_xy(mask):
     """calculate and return pixel position of dot of given color"""

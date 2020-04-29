@@ -5,7 +5,7 @@
 # The "ALTINO System" is a robot platform designed for education. It is a four-wheeled robot based on an Ackermann vehicle frame.
 
 PROTO Altino [
-  field SFVec3f    translation         0 0.027 -4.2            # Is `Transform.translation`.
+  field SFVec3f    translation         0 0.03 -4.2            # Is `Transform.translation`.
   field SFVec3f    sensor_translation  0 0.04 0.05             # Is `Transform.translation`.
   field SFRotation rotation            0 1 0 0                 # Is `Transform.rotation`.
   field SFRotation sensor_rotation     0 -0.7071 0.7071 3.14   # Is `Transform.rotation`.
@@ -33,7 +33,7 @@ PROTO Altino [
     suspensionFrontDampingConstant 4000
     suspensionRearSpringConstant   100000
     suspensionRearDampingConstant  4000
-    wheelsDampingConstant          5
+    wheelsDampingConstant          0.001
     extensionSlot [
       RangeFinder {
           translation IS sensor_translation
@@ -263,12 +263,12 @@ PROTO Altino [
     wheelFrontLeft          AltinoWheel { name "front left wheel"}
     wheelRearRight          AltinoWheel { name "rear right wheel"}
     wheelRearLeft           AltinoWheel { name "rear left wheel"}
-    type                    "4x4"
+    type                    "propulsion"
     engineType              "electric"
     engineSound             ""
-    brakeCoefficient        700
+    brakeCoefficient        10
     time0To100              2
-    engineMaxTorque         0.1
+    engineMaxTorque         1
     engineMaxPower          1
     engineMinRPM            1
     engineMaxRPM            250
