@@ -1,0 +1,136 @@
+- week: 1
+  goals:
+  - goal: Simulator is ready and available to use
+    tasks:
+    - Install Gazebo and Webots
+    - Learn and investigate the feasibility of using the simulators
+    deliverable: Report on the status of simulator set up
+    points: 10
+
+
+- week: 2
+  goals:
+  - goal: Robot can drive around in simulator
+    tasks:
+    - Explore driving options
+    - Develop inital actuation model
+    deliverable: Description of actuation model, maybe equations of simplified model
+    points: 4
+    
+  - goal: Robot can output raw data collected
+    tasks:
+    - Explore sensors available, pros and cons
+    - Develop initial sensor model
+    deliverable: Description of sensors and maybe equations of simplified model
+    points: 4
+    
+  - goal: Have potential alternatives to simulation environment
+    tasks:
+    - Identify alternatives
+    - Investigate 6DOF + GPS data qcquisition on smartphone
+    deliverable: Report 
+    points: 2
+
+
+- week: 3
+  goals:
+  - goal: A useful simulator for the robot and environment
+    tasks:
+    - Finalize simulator environment
+    - Identify and catalog any limitations to the simulation compared to a real-life scenario
+    deliverable: Report on the 
+    points: 4
+    
+  - goal: Robot can take in control inputs
+    tasks:
+    - Integrate controller and actuaion
+    - Define the actuation model for the robot
+    deliverable: Equations and report defining the inital control model
+    points: 3
+    
+  - goal: Robot can record data from sensors
+    tasks:
+    - Add sensors to robot and verify functionality
+    - Define the sensor model for the robot
+    deliverable: 
+    points: 3
+ 
+
+- week: 4
+  goals:
+  - goal: Robot actuation and sensors are easy to use and give reliable data
+    tasks:
+    - Verify the models developed
+    - Documentation and creating visualizations
+    deliverable: Equations and models describing our actuaion and sensor model
+    points: 4
+    
+  - goal: Path prediction works on limited or simplified cases
+    tasks:
+    - Create a visulization for the robot, frisbee, and predicted path
+    - Identify limitations of the path prediction
+    - Documentation and creating visualizations
+    deliverable: Equations and diagrams describing path prediction
+    points: 6
+
+- week: 5
+  goals:
+  - goal: Car can achieve target turning radius
+    tasks:
+    - Implement wheel control algorithm that adjusts steer and individual wheel velocity based on target turning radius
+    - Test accuracy of control scheme at various target turning radii    
+    deliverable: Demonstration of wheel turning angles and test data
+    points: 5
+    
+  - goal: Car can detect frisbee's tilt and rate of rotation
+    tasks:
+    - Implement computer vision functions to detect frisbee's rate of rotation and tilt from car camera
+    deliverable: Demonstration of car's tilt and rate of rotation detection
+    points: 5
+
+- week: 6
+  goals:
+  - goal: Car outputs accurate prediction for arbitrary frisbee states
+    tasks:
+    - Integrate data streaming into the model
+    - Add higher level functions to controller program that can calculate frisbee states based on the continuous stream of input data
+    deliverable: Figures comparing car's prediction of frisbee state to ground truth
+    points: 10
+  
+- week: 7
+  goals:
+  - goal: Design and Implement modified pure pursuit algorithm
+    tasks:
+    - Modify pure pursuit algorithm based on frisbee state predictor output
+    - Implement algorithm and collect data
+    - Create simple visualization of car using algorithm to follow a path
+    deliverable: Equations and diagrams describing path planning
+    points: 10
+  
+- week: 8
+  goals:
+  - goal: data of frisbee control algorithm when the frisbee is closer than range sensor's minimum range
+    tasks:
+    - Design computer vision algorithm to gain a rough estimate of where the frisbee is when it is close to the robot
+    - Design and implement control scheme that uses the estimate to maneuver under the frisbee
+    deliverable: Demonstration of robot positioning itself under the frisbee when it is close to landing
+    points: 10
+  
+- week: 9
+  goals:
+  - goal: Robot can catch frisbee in several unique test cases
+    tasks:
+    - Finalize path planning algorithm
+    - Test for further edge cases    
+    - Test and document limits of frisbee-catching algorithms
+    deliverable: Demonstration of frisbee catching and description of limitations
+    points: 10
+  
+- week: 10
+  goals:
+  - goal: Modify algorithms to work for edge cases
+    tasks:
+    - Analyze limits of frisbee-catching algorithm
+    - Make additional adjustments/calibrations to cover additional cases
+    deliverable: Figures comparing old and new behavior
+    points: 10

@@ -1,0 +1,8 @@
+Works Cited:
+http://datagenetics.com/blog/december12016/index.html
+https://www.ri.cmu.edu/pub_files/2009/2/Automatic_Steering_Methods_for_Autonomous_Automobile_Path_Tracking.pdf
+https://www.researchgate.net/figure/Ackerman-geometry-model-The-linear-speed-of-each-wheel-drive-is-expressed-as-a_fig2_228464812
+
+TODO:
+adjust actuation
+-apply differential to fwd control scheme

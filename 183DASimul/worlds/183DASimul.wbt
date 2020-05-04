@@ -1,27 +1,64 @@
 #VRML_SIM R2020a utf8
 WorldInfo {
+  contactProperties [
+    ContactProperties {
+      coulombFriction [
+        100
+      ]
+      forceDependentSlip [
+        0.001
+      ]
+    }
+  ]
 }
 Viewpoint {
-  orientation 0.013929467226560731 -0.9876235243982175 -0.1562233785258386 3.356319913191727
-  position 0.894959801948982 1.5978234777534632 -7.90577401514133
+  orientation 0.006259438819717323 0.8071088657894261 0.5903694590591289 3.1483917613857013
+  position -0.575468363655631 3.555042721087006 -5.137016231090718
+  followType "Mounted Shot"
 }
 TexturedBackground {
-}
-TexturedBackgroundLight {
+  texture "factory"
 }
 RectangleArena {
   translation 0 0.01 0
-  floorSize 10 10
+  floorSize 15 15
   floorTileSize 5 5
-  floorAppearance RoughConcrete {
+  floorAppearance FormedConcrete {
   }
-  wallHeight 0.01
-  wallAppearance CementTiles {
+  wallHeight 5
+  wallAppearance Plaster {
+    textureTransform TextureTransform {
+      scale 5 5
+    }
   }
-}
-DEF frisbee Frisbee {
-  translation 0 0.8 -4.15
-  controller "frisbee_controller"
 }
 Altino {
+}
+PointLight {
+  attenuation 0 0 1
+  intensity 10
+  location -2 5 2
+  castShadows TRUE
+}
+PointLight {
+  attenuation 0 0 1
+  intensity 10
+  location 2 5 2
+  castShadows TRUE
+}
+PointLight {
+  attenuation 0 0 1
+  intensity 10
+  location 2 5 -2
+  castShadows TRUE
+}
+PointLight {
+  attenuation 0 0 1
+  intensity 10
+  location -2 5 -2
+  castShadows TRUE
+}
+Frisbee {
+  translation 0.15 0.35 -3.86
+  controller "void"
 }
