@@ -12,8 +12,8 @@ WorldInfo {
   ]
 }
 Viewpoint {
-  orientation 0.006259438819717323 0.8071088657894261 0.5903694590591289 3.1483917613857013
-  position -0.575468363655631 3.555042721087006 -5.137016231090718
+  orientation 0.026439355629451416 0.9752883019631672 0.21934832693162182 3.347910492018861
+  position -0.6047654050091628 1.4700920033967042 -6.794729108701058
   followType "Mounted Shot"
 }
 TexturedBackground {
@@ -31,8 +31,6 @@ RectangleArena {
       scale 5 5
     }
   }
-}
-Altino {
 }
 PointLight {
   attenuation 0 0 1
@@ -58,7 +56,22 @@ PointLight {
   location -2 5 -2
   castShadows TRUE
 }
-Frisbee {
-  translation 0.15 0.35 -3.86
-  controller "void"
+Altino {
+}
+Solid {
+  translation -0.02 0.54 -4.16
+  children [
+    Shape {
+      appearance Appearance {
+        material Material {
+        }
+      }
+      geometry Box {
+        size 0.1 0.1 0.1
+      }
+    }
+  ]
+  recognitionColors [
+    0 1 0
+  ]
 }
