@@ -69,6 +69,8 @@ PROTO Altino [
         width 512
         height 272
         noise 0
+        recognition Recognition {
+        }
       }
       GPS {
         name "gps"

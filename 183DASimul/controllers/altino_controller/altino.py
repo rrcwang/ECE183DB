@@ -102,9 +102,10 @@ class Altino(Robot):
     # Sensor Functions
     def enable_sensors(self):
         """enables all sensors"""
-        self.gps.enable(32)
-        self.range_finder.enable(32)
-        self.camera.enable(32)
+        self.gps.enable(self.timeStep)
+        self.range_finder.enable(self.timeStep)
+        self.camera.enable(self.timeStep)
+        self.camera.recognitionEnable(self.timeStep)
         self.camera_led.set(1)
 
 def distance(p1, p2):

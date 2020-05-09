@@ -19,6 +19,10 @@ def log_gps_data(time, vector):
 def log_range_data(image):
     np.savetxt('range_log.csv', image, delimiter = ', ')
 
+def log_frisbee_data(time, state):
+    with open('frisbee_log.csv', 'a', newline='') as file:
+        writer = csv.writer(file)
+        writer.writerow([time, state.x, state.y, state.z, state.dx, state.dy, state.dz, state.roll, state.pitch, state.yaw, state.d_roll, state.d_pitch, state.d_yaw])
 
 # create the Robot instance.
 altino = al.Altino()
@@ -27,6 +31,11 @@ f = open('gps_log.csv', "w+")
 with open('gps_log.csv', 'a', newline='') as file:
     writer = csv.writer(file)
     writer.writerow(["t(ms)", "x", "y", "z"])
+    
+f = open('frisbee_log.csv', "w+")
+with open('frisbee_log.csv', 'a', newline='') as file:
+    writer = csv.writer(file)
+    writer.writerow(["t(ms)", "x", "y", "z", "dx", "dy", "dz", "roll", "pitch", "yaw", "d_roll", "d_pitch", "d_yaw"])
 
 f = open('range_log.csv', "w+")
 
@@ -53,8 +62,9 @@ while altino.step(timestep) != -1:
 
     gps_data      = altino.gps.getValues()
     range_data    = altino.range_finder.getRangeImageArray()
-    altino.camera.getImage()
-    camera_status = altino.camera.saveImage('frame.png', 0)
+    frisbee_data  = cd.wb_detect(altino, [0, 1, 0])
+    #altino.camera.getImage()
+    #camera_status = altino.camera.saveImage('frame.png', 0)
     current_time += timestep
     radius = float('inf')
     
@@ -76,7 +86,10 @@ while altino.step(timestep) != -1:
     altino.set_steer(radius)
     # Process sensor data here.
     log_gps_data(current_time, gps_data)
-    cd.cv_detect(altino, range_data)
+    if frisbee_data:
+        pos = frisbee_data.get_position()
+        frisbee_state = cd.get_frisbee_state(pos[0], pos[1], pos[2], 0, 0, 0)
+        log_frisbee_data(current_time, frisbee_state)
 
     # Enter here functions to send actuator commands, like:
     #  motor.setPosition(10.0)

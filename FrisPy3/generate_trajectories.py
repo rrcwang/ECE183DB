@@ -8,20 +8,14 @@ inital_offset = [0,0,0.06]
 N = 100
 sim_times = np.linspace(0,N,N+1) * timestep / 1000
 
-trajectories = np.empty((30001,12,6))
-
-# generate flight path trajectories
-for i in range(1,6):
-    disc = FrisPy.create_disc(filename = "test"+ str(i) + ".txt")
-    times, trajectory = FrisPy.get_trajectory(disc, full_trajectory=True)
-    trajectories[:,:,i] = trajectory
-
-    # save data as csv
-    np.savetxt("trajectory" + str(i) + ".csv", trajectory, delimiter=',')
+# generate flight path trajectory
+disc = FrisPy.create_disc(filename = "test2.txt")
+times, trajectory = FrisPy.get_trajectory(disc, full_trajectory=True)
 
 trajectory[:,0:3] = trajectory[:,0:3] *scaling_factor + inital_offset
 
 # save data
+np.savetxt("trajectory.csv", trajectory, delimiter=',')
 print(trajectory)
 
 # DEBUG, visualizer
