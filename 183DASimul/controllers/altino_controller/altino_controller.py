@@ -62,7 +62,9 @@ while altino.step(timestep) != -1:
     if key == Keyboard.UP:
         altino.set_speed(50)
     elif key == Keyboard.DOWN:
-        altino.set_speed(-20)
+        #altino.set_speed(-20)
+        r = np.array(range_data)
+        np.savetxt('range_data.csv',range_data,delimiter=',')
     elif key == Keyboard.LEFT:
         radius = -0.3
         altino.set_speed(0)

@@ -18,3 +18,17 @@ FrisPy3/trajectory4.csv
 FrisPy3/trajectory5.csv
 183DASimul/controllers/altino_controller/gps_log.csv
 FrisPy3/test2.txt
+FrisPy3/test2_midpoints/midpoint1.txt
+FrisPy3/test2_midpoints/midpoint2.txt
+FrisPy3/test2_midpoints/midpoint3.txt
+FrisPy3/test2_midpoints/midpoint4.txt
+FrisPy3/test3_midpoints/midpoint3.txt
+FrisPy3/test3_midpoints/midpoint4.txt
+FrisPy3/test3_midpoints/midpoint5.txt
+FrisPy3/test4_midpoints/midpoint1.txt
+FrisPy3/test4_midpoints/midpoint2.txt
+FrisPy3/test4_midpoints/midpoint3.txt
+FrisPy3/test4_midpoints/midpoint4.txt
+183DASimul/controllers/altino_controller/__pycache__/altino.cpython-37.pyc
+183DASimul/controllers/altino_controller/__pycache__/camera_detection.cpython-37.pyc
+183DASimul/controllers/altino_controller/.ipynb_checkpoints/new_angle-checkpoint.ipynb

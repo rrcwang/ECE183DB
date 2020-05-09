@@ -23,7 +23,7 @@ position_data = data[:,0:3]
 rotation_data = np.genfromtxt("rotations.csv", delimiter=',')
 
 time_index = 0
-read = True
+read = False
 # Main loop:
 # - perform simulation steps until Webots is stopping the controller
 while supervisor.step(timestep) != -1:

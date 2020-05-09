@@ -9,7 +9,7 @@ PROTO Frisbee [
   field SFNode      physics             NULL
   field SFBool      locked              FALSE
   field SFBool      supervisor          TRUE
-  field SFString    controller          "frisbee_flight"
+  field SFString    controller          "frisbee_controller"
 ]
 {
   Robot {
