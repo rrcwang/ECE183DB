@@ -12,8 +12,8 @@ WorldInfo {
   ]
 }
 Viewpoint {
-  orientation 0.0033166745834116895 0.8158759701351791 0.5782174340381725 3.1404200194141727
-  position -0.4274778343260485 9.615157969772271 -5.552620844773635
+  orientation 0.25784518356290476 0.826212226645448 0.500888428549695 3.945865749606215
+  position -3.2266692747498205 7.2607731679871375 -4.978863838108058
   followType "Mounted Shot"
 }
 TexturedBackground {
@@ -59,59 +59,6 @@ PointLight {
   location -2 5 -2
   castShadows TRUE
 }
-Solid {
-  translation 1 0 -3
-  children [
-    Shape {
-      appearance Appearance {
-        material Material {
-          diffuseColor 1 0 0
-        }
-      }
-      geometry Box {
-        size 0.1 0.1 0.1
-      }
-    }
-  ]
-  name "waypoint 1"
-  recognitionColors [
-    0 1 0
-  ]
-}
-Solid {
-  translation -1 0 -2
-  children [
-    Shape {
-      appearance Appearance {
-        material Material {
-          diffuseColor 1 0 0
-        }
-      }
-      geometry Box {
-        size 0.1 0.1 0.1
-      }
-    }
-  ]
-  name "solid(1)"
-  recognitionColors [
-    0 1 0
-  ]
-}
-Solid {
-  children [
-    Shape {
-      appearance Appearance {
-        material Material {
-          diffuseColor 1 0 0
-        }
-      }
-      geometry Box {
-        size 0.1 0.1 0.1
-      }
-    }
-  ]
-  name "solid(2)"
-  recognitionColors [
-    0 1 0
-  ]
+DEF frisbee Frisbee {
+  translation 0 0.5 -4.2
 }

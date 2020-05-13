@@ -5,10 +5,10 @@
 # The "ALTINO System" is a robot platform designed for education. It is a four-wheeled robot based on an Ackermann vehicle frame.
 
 PROTO Altino [
-  field SFVec3f    translation         0 0.03 -4.2            # Is `Transform.translation`.
-  field SFVec3f    sensor_translation  0 0.04 0.05             # Is `Transform.translation`.
+  field SFVec3f    translation         0 0.03 -4.2             # Is `Transform.translation`.
+  field SFVec3f    sensor_translation  0 0.04 0                # Is `Transform.translation`.
   field SFRotation rotation            0 1 0 0                 # Is `Transform.rotation`.
-  field SFRotation sensor_rotation     0 -0.7071 0.7071 3.14   # Is `Transform.rotation`.
+  field SFRotation sensor_rotation     0 -0.7071 0.7071 3.14159   # Is `Transform.rotation`.
   field SFString   name                "vehicle"               # Is `Solid.name`.
   field SFString   controller          "altino_controller" # Is `Robot.controller`.
   field SFString   controllerArgs      ""                      # Is `Robot.controllerArgs`.
@@ -56,7 +56,7 @@ PROTO Altino [
           minRange 0.4
           maxRange 30
           width 1024
-          height 544
+          height 1024
           spherical TRUE
           noise 0
       }
