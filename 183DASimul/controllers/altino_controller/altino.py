@@ -4,6 +4,7 @@ from controller import Robot
 from controller import Motor
 from controller import Camera
 import numpy as np
+import math
 
 # Altino Robot Class
 class Altino(Robot):
@@ -41,6 +42,7 @@ class Altino(Robot):
         self.range_finder = self.getRangeFinder('range finder')
         self.camera = self.getCamera('camera')
         self.camera_led = self.getLED('camera led')
+        self.compass = self.getCompass('compass')
 
         # get display and attach camera
         self.display = self.getDisplay('display')
@@ -82,7 +84,6 @@ class Altino(Robot):
         # Calculate wheel speeds based on target radius
         rear_right_speed = (self.target_speed/self.target_radius)*(self.target_radius - 0.04)
         rear_left_speed = (self.target_speed/self.target_radius)*(self.target_radius + 0.04)
-        print("left speed: ", rear_left_speed, "\trear right speed: ", rear_right_speed)
 
         # Check for valid turning radii, speed and set steer, speed
         if abs(angle_right) <= self.maxSteer and abs(angle_left) <= self.maxSteer:
@@ -106,7 +107,18 @@ class Altino(Robot):
         self.range_finder.enable(self.timeStep)
         self.camera.enable(self.timeStep)
         self.camera.recognitionEnable(self.timeStep)
+        self.compass.enable(self.timeStep)
         self.camera_led.set(1)
+
+    def get_bearing(self):
+        """Returns bearing in degrees. Code inspired by sample code
+        at https://www.cyberbotics.com/doc/reference/compass?tab-language=python"""
+        north = self.compass.getValues()
+        rad = math.atan2(north[0], north[2])
+        bearing = (rad - math.pi/2)/(math.pi/180)
+        if bearing < 0:
+            bearing = bearing + 360
+        return bearing
 
 def distance(p1, p2):
     """returns distance between two points"""

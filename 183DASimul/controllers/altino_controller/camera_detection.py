@@ -3,7 +3,7 @@ import numpy as np
 import cv2
 import math
 
-BUFFER_SIZE = 5
+BUFFER_SIZE = 10
 TIME_STEP = 64
 
 class Frisbee_State():
@@ -65,6 +65,7 @@ def cv_detect(altino, range_data):
 
     # calculate frisbee position
     coords = img_to_cart(range_data, 2*int(px), 2*int(py))
+    return coords
 
 def get_xy(mask):
     """calculate and return pixel position of dot of given color"""
@@ -84,7 +85,6 @@ def wb_detect(altino, colors):
     objects = altino.camera.getRecognitionObjects()
     for i in range(len(objects)):
         if objects[i].get_colors() == colors:
-            print("found object!")
             return objects[i]
 
 # frisbee state data processing

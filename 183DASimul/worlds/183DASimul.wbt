@@ -33,18 +33,6 @@ RectangleArena {
   }
 }
 Altino {
-  hidden position_0_0 2.0765085948371836e-15
-  hidden position2_0_0 9.125660818815691e-05
-  hidden position_0_1 -1.9869647207072112e-15
-  hidden position2_0_1 9.125660201151983e-05
-  hidden position_0_2 5.953116420922109e-13
-  hidden position_0_3 6.115443636117675e-13
-  hidden linearVelocity_0 -4.8670921723111475e-15 1.2229234926053323e-09 6.675154315960442e-11
-  hidden angularVelocity_0 2.1419124971650966e-09 -1.09637540366065e-14 5.665784038600848e-14
-  hidden rotation_1 2.275461070298262e-11 1 1.0382542974185918e-15 9.125660906643098e-05
-  hidden rotation_2 2.1773380506513604e-11 -1 -9.934823603536056e-16 9.125660420005224e-05
-  translation -1.7126480112004174e-15 0.02765033545057786 -4.200047660215192
-  rotation -1 4.928292716142802e-12 1.8153829180122374e-12 0.002552454702030089
 }
 PointLight {
   attenuation 0 0 1
@@ -72,4 +60,55 @@ PointLight {
 }
 DEF frisbee Frisbee {
   translation 0 0.5 -4.2
+  Solid {
+    children [
+      Shape {
+        appearance Appearance {
+          material Material {
+          }
+        }
+        geometry Box {
+          size 0.1 0.1 0.1
+        }
+      }
+    ]
+    recognitionColors [
+      0 1 0
+    ]
+  }
+  Solid {
+    translation -5 0 1
+    children [
+      Shape {
+        appearance Appearance {
+          material Material {
+          }
+        }
+        geometry Box {
+          size 0.1 0.1 0.1
+        }
+      }
+    ]
+    name "solid(1)"
+    recognitionColors [
+      0 1 0
+    ]
+  }
+  Solid {
+    translation -6 0 -7
+    children [
+      Shape {
+        appearance Appearance {
+          material Material {
+          }
+        }
+        geometry Box {
+          size 0.1 0.1 0.1
+        }
+      }
+    ]
+    name "solid(2)"
+    recognitionColors [
+      0 1 0
+    ]
 }
