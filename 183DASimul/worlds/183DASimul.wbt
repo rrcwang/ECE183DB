@@ -12,8 +12,8 @@ WorldInfo {
   ]
 }
 Viewpoint {
-  orientation -0.019904537282497494 0.9059670209408452 0.42288008508694225 3.041952162671142
-  position 1.2447684465620328 16.003088032069265 -12.60776417684027
+  orientation 0.0033166745834116895 0.8158759701351791 0.5782174340381725 3.1404200194141727
+  position -0.4274778343260485 9.615157969772271 -5.552620844773635
   followType "Mounted Shot"
 }
 TexturedBackground {
@@ -33,6 +33,7 @@ RectangleArena {
   }
 }
 Altino {
+  translation 0 0.02 -4.2
 }
 PointLight {
   attenuation 0 0 1
@@ -59,10 +60,12 @@ PointLight {
   castShadows TRUE
 }
 Solid {
+  translation 1 0 -3
   children [
     Shape {
       appearance Appearance {
         material Material {
+          diffuseColor 1 0 0
         }
       }
       geometry Box {
@@ -70,16 +73,18 @@ Solid {
       }
     }
   ]
+  name "waypoint 1"
   recognitionColors [
     0 1 0
   ]
 }
 Solid {
-  translation -5 0 1
+  translation -1 0 -2
   children [
     Shape {
       appearance Appearance {
         material Material {
+          diffuseColor 1 0 0
         }
       }
       geometry Box {
@@ -93,11 +98,11 @@ Solid {
   ]
 }
 Solid {
-  translation -6 0 -7
   children [
     Shape {
       appearance Appearance {
         material Material {
+          diffuseColor 1 0 0
         }
       }
       geometry Box {

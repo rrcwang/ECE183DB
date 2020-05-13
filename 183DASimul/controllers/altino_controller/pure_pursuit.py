@@ -3,6 +3,7 @@ import math
 import csv
 
 LOOKAHEAD_DISTANCE = 0.5
+THRESHOLD_DISTANCE = 0.15
 SPEED = 40
 
 def get_path():
@@ -68,8 +69,6 @@ def get_intersection(center, p1, p2):
         x2 = (D*d_z - sign(d_z)*d_x*np.sqrt(det))/(d_r**2) + center[0]
         z2 = (-1*D*d_x - abs(d_z)*np.sqrt(det))/(d_r**2) + center[1]
         # Check if points are in bounds
-        print("point 1: ", (x1, z1))
-        print("point 2: ", (x2, z2))
         if is_in_bounds(p1, (x1, z1), p2) and not is_in_bounds(p1, (x2, z2), p2):
             point = (x1, z1)
         elif not is_in_bounds(p1, (x1, z1), p2) and is_in_bounds(p1, (x2, z2), p2):
@@ -108,15 +107,20 @@ def pp_update(alti, pos, deg, path):
     the path"""
     la_point = None
     pth = path
+    dest = pth[-1]
+
+    # Stop near goal point
+    if distance(pos, dest) < 0.15:
+        alti.set_steer(float('inf'))
+        alti.set_speed(0)
+        return
 
     # Calculate lookahead point from (# path points - 1) segments
     for i in range(len(pth) - 1):
         point = get_intersection(pos, pth[i], pth[i + 1])
         if point is not None:
-            print("retval: ", point)
-            print("segment: ", pth[i + 1])
             la_point = point
-    print("final la_point: ", la_point)
+    print("la_point: ", la_point)
     print("position: ", pos)
     
     radius = get_turning_radius(pos, la_point, deg)
