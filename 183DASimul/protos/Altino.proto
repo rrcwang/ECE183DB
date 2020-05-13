@@ -75,6 +75,9 @@ PROTO Altino [
       GPS {
         name "gps"
       }
+      Compass {
+        name "compass"
+      }
       Display {
         name "display"
         width 512

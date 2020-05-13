@@ -12,8 +12,8 @@ WorldInfo {
   ]
 }
 Viewpoint {
-  orientation 0.026439355629451416 0.9752883019631672 0.21934832693162182 3.347910492018861
-  position -0.6047654050091628 1.4700920033967042 -6.794729108701058
+  orientation -0.019904537282497494 0.9059670209408452 0.42288008508694225 3.041952162671142
+  position 1.2447684465620328 16.003088032069265 -12.60776417684027
   followType "Mounted Shot"
 }
 TexturedBackground {
@@ -31,6 +31,8 @@ RectangleArena {
       scale 5 5
     }
   }
+}
+Altino {
 }
 PointLight {
   attenuation 0 0 1
@@ -56,10 +58,7 @@ PointLight {
   location -2 5 -2
   castShadows TRUE
 }
-Altino {
-}
 Solid {
-  translation -0.02 0.54 -4.16
   children [
     Shape {
       appearance Appearance {
@@ -71,6 +70,42 @@ Solid {
       }
     }
   ]
+  recognitionColors [
+    0 1 0
+  ]
+}
+Solid {
+  translation -5 0 1
+  children [
+    Shape {
+      appearance Appearance {
+        material Material {
+        }
+      }
+      geometry Box {
+        size 0.1 0.1 0.1
+      }
+    }
+  ]
+  name "solid(1)"
+  recognitionColors [
+    0 1 0
+  ]
+}
+Solid {
+  translation -6 0 -7
+  children [
+    Shape {
+      appearance Appearance {
+        material Material {
+        }
+      }
+      geometry Box {
+        size 0.1 0.1 0.1
+      }
+    }
+  ]
+  name "solid(2)"
   recognitionColors [
     0 1 0
   ]
