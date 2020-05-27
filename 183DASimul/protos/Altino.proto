@@ -271,13 +271,13 @@ PROTO Altino [
     type                    "propulsion"
     engineType              "electric"
     engineSound             ""
-    brakeCoefficient        10
-    time0To100              2
-    engineMaxTorque         1
-    engineMaxPower          1
+    brakeCoefficient        1
+    time0To100              0.001
+    engineMaxTorque         100
+    engineMaxPower          100
     engineMinRPM            1
     engineMaxRPM            250
     gearRatio               [-30 30]
-    maxWheelVelocity        100
+    maxWheelVelocity        100000
   }
 }

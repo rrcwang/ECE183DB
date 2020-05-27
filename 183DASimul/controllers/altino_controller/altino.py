@@ -13,7 +13,7 @@ class Altino(Robot):
         super(Altino, self).__init__()
         # define constants
         self.timeStep = 64
-        self.maxSpeed = 50
+        self.maxSpeed = float('inf')
         self.maxSteer = 1.34
         self.minSteer = -1.34
 
@@ -36,6 +36,8 @@ class Altino(Robot):
         Motor.setPosition(self.rear_right_motor, float('inf'))
         Motor.setVelocity(self.rear_right_motor, 0)
         Motor.setVelocity(self.rear_left_motor, 0)
+        Motor.setAcceleration(self.rear_right_motor, 200)
+        Motor.setAcceleration(self.rear_left_motor, 200)
 
         # get sensors
         self.gps = self.getGPS('gps')
@@ -58,9 +60,13 @@ class Altino(Robot):
 
     def set_steer(self, radius):
         """sets target turning radius"""
-        # band-aid fix, should be closer to target radius in simulator
-        self.target_radius = radius/1.5
-        self.radius_pos = np.array([radius/1.5, 0])
+        # need steering compensation for speed
+        if self.target_speed != 0:
+            adjusted_radius = radius/(self.target_speed/10)
+        else:
+            adjusted_radius = radius
+        self.target_radius = adjusted_radius
+        self.radius_pos = np.array([adjusted_radius, 0])
         self.actuate()
 
     def actuate(self):
