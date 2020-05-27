@@ -5,14 +5,22 @@ def convert(rots):
     '''
     axis_angle = np.empty((0,4))
 
-    for i in range(rots.shape[0]):
-        axis_ang = euler_xyz_to_axis_angle(rots[i,:])
+    for i in range(rots.shape[0]-1):
+        axis_ang = euler_xyz_to_axis_angle(rots[i,:]) #
         
-        axis_angle = np.append(axis_angle, np.array([axis_ang]), axis=0)
+        #if (i == 0):
+            #d_ang = axis_ang[3]
+        #else:
+            #d_ang = (axis_ang[3] - axis_angle[i-1,3]) % (2 * np.pi)
+        
+        #axis_ang[3] = d_ang
 
-    swap_col = np.copy(axis_angle[:,0])
-    axis_angle[:,0] = axis_angle[:,1]
-    axis_angle[:,1] = swap_col
+        axis_angle = np.append(axis_angle, np.array([axis_ang]), axis=0)
+    
+    # xyz swap to zxy
+    swap_cols = np.copy(axis_angle[:,0:2])
+    axis_angle[:,0] = axis_angle[:,2]
+    axis_angle[:,1:3] = swap_cols
 
     return axis_angle
 

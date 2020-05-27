@@ -52,7 +52,7 @@ alti.enable_sensors()
 keyboard = Keyboard()
 keyboard.enable(10)
 steer = 0
-current_time = 0;
+current_time = 0
 path = pp.get_path()
 path = pp.enhance_path([0, -4.2], path)
 pos = alti.gps.getValues() # get initial position

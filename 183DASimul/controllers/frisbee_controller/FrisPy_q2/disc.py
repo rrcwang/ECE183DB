@@ -54,12 +54,24 @@ class Disc(object):
     self.vx=vx
     self.vy=vy
     self.vz=vz
+
+    # convert angles
     self.phi=phi
     self.theta=theta
-    self.gamma=gamma
+    self.gamma=gamma    
+    self.calc_trig_functions()
+    sp,cp = self.sin_phi,self.cos_phi
+    st,ct = self.sin_theta,self.cos_theta
+    np.array([[ct,sp*st,-st*cp],
+              [0,cp,sp],
+              [st,-sp*ct,cp*ct]])
+
+    # convert angular velocity
     self.phidot=phidot
     self.thetadot=thetadot
     self.gammadot=gammadot
+    
+
     self.debug=debug
     self.has_model=False
     self.update_data_fields()
@@ -241,7 +253,7 @@ class Disc(object):
       print("\tC1:",R[0])
       print("\tC2:",R[1])
       print("\tC3:",R[2])
-      print("\tavl: ",avl)
+      print("\tavl: ",avl) 
       print("\txbhat = ",xbhat)
       print("\tybhat = ",ybhat)
       print("\tzbhat = ",zbhat)

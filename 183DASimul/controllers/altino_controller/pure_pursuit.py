@@ -86,12 +86,12 @@ def get_turning_radius(p1, p2, deg):
     p1 is the xz coordinate of the car, p2 is that lookahead point
     deg is degrees of rotation from the north((0, 1) in Webots) axis"""
     # Transform frame of reference
-    print("deg: ", deg)
+    #print("deg: ", deg)
     rad = deg*(math.pi/180)
     rot = np.array([[math.cos(rad), math.sin(rad)], [-1*math.sin(rad), math.cos(rad)]])
     v1 = np.array([p2[0] - p1[0], p2[1] - p1[1]])
     v1 = rot @ v1
-    print("vec: ", v1)
+    #print("vec: ", v1)
     # Distance should always be equal to LOOKAHEAD_DISTANCE
     dist = np.sqrt(v1[0]**2 + v1[1]**2)
 
