@@ -54,8 +54,8 @@ keyboard.enable(10)
 steer = 0
 current_time = 0
 path = pp.get_path()
+path = pp.enhance_path([0, -4.2], path)
 pos = alti.gps.getValues() # get initial position
-path.insert(0, [0, -4.2])
 # Main loop:
 # - perform simulation steps until Webots is stopping the controller
 while alti.step(timestep) != -1:

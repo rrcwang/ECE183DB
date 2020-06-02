@@ -2,9 +2,9 @@ import numpy as np
 import math
 import csv
 
-LOOKAHEAD_DISTANCE = 0.5
+LOOKAHEAD_DISTANCE = 0.7
 THRESHOLD_DISTANCE = 0.15
-SPEED = 40
+SPEED = 60
 
 def get_path():
     """Retrieves the path of points from path.csv. Call this from the
@@ -99,15 +99,30 @@ def get_turning_radius(p1, p2, deg):
     radius = (dist**2)/(-2*v1[0])
     return radius
 
+def enhance_path(current_pos, path):
+    """enhances a path, adds current pos as first point in path
+    and adds point(s) ahead of the destination. Call this once on
+    every path or pp_update will not function correctly"""
+    retpath = path
+    retpath.insert(0, current_pos)
+    dest = retpath[-1]
+    while distance(dest, retpath[-1]) < LOOKAHEAD_DISTANCE*1.5:
+        diff = [(dest[0] - path[-2][0]), (dest[1] - path[-2][1])]
+        print(retpath[-1])
+        retpath.append([retpath[-1][0] + diff[0], retpath[-1][1] + diff[1]])
+        print(retpath[-1])
+    return retpath
+
 def pp_update(alti, pos, deg, path):
     """Pure pursuit update. Takes the position of the robot,
     its bearing and a path (list of xz points) and sets its
     turning radius and speed. It his highly recommended to
     append the robots starting position to the beginning of
-    the path"""
+    the path. Path must be enhanced with enhane_path()"""
     la_point = None
     pth = path
-    dest = pth[-1]
+    dest = pth[-2]
+
 
     # Stop near goal point
     if distance(pos, dest) < 0.15:
