@@ -276,7 +276,7 @@ class Disc(object): # UPDATED
     w_lab = np.array([self.wxl,self.wyl,self.wzl])
     A = self.get_basis_vectors()
 
-    wxb,wyb,wzb = A.T @ w_lab
+    wxb,wyb,wzb = A @ w_lab
     C_x = self.coefficients.C_x(wxb,wzb)
     C_y = self.coefficients.C_y(alpha,wyb)
     C_z = self.coefficients.C_z(wzb)
@@ -285,7 +285,6 @@ class Disc(object): # UPDATED
     torque_z = C_z*torque_amplitude*self.zbhat
 
     total_torque = torque_x+torque_y+torque_z
-    print(total_torque)
         
     return total_torque # in lab frame
 

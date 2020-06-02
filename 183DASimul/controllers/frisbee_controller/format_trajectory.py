@@ -3,7 +3,7 @@ import quaternion
 import numpy.linalg as linalg
 import quaternion_to_AA
 
-data = np.genfromtxt("traj1.csv", delimiter=',')
+data = np.genfromtxt("traj3.csv", delimiter=',')
 
 quaternion_rotation = data[6:10]
 axis_angle_rotation = []
