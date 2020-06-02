@@ -53,41 +53,27 @@ keyboard = Keyboard()
 keyboard.enable(10)
 steer = 0
 current_time = 0
-path = pp.get_path()
-path = pp.enhance_path([0, -4.2], path)
+#path = pp.get_path()
+#path = pp.enhance_path([0, -4.2], path)
 pos = alti.gps.getValues() # get initial position
 # Main loop:
 # - perform simulation steps until Webots is stopping the controller
 while alti.step(timestep) != -1:
     # Read the sensors:
-    # Enter here functions to read sensor data, like:
-    #  val = ds.getValue()    
-
     gps_data      = alti.gps.getValues()
     range_data    = alti.range_finder.getRangeImageArray()
     frisbee_data  = cd.wb_detect(alti, [0, 1, 0])
-    #altino.camera.getImage()
-    #camera_status = altino.camera.saveImage('frame.png', 0)
-    current_time += timestep
-    #radius = float('inf')
+    current_pos   = (gps_data[0], gps_data[2])
     
-    #key = keyboard.getKey()
-    #if key == Keyboard.UP:
-    #    alti.set_speed(50)
-    #elif key == Keyboard.DOWN:
-    #    alti.set_speed(-20)
-    #elif key == Keyboard.LEFT:
-    #    radius = -0.3
-    #    alti.set_speed(0)
-    #elif key == Keyboard.RIGHT:
-    #    radius = 0.5
-    #    alti.set_speed(20)
-    #else:
-    #   alti.set_speed(0)
-    #alti.set_steer(radius)
+    current_time += timestep
+    
+    # Read Path
+    path_raw = np.loadtxt('../frisbee_controller/position_data.csv', delimiter = ',')
+    path = np.delete(path_raw, 1, 1).tolist()
+    path = pp.enhance_path(current_pos, path)
     
     # Pure Pursuit
-    pp.pp_update(alti, (gps_data[0], gps_data[2]), alti.get_bearing(), path)
+    pp.pp_update(alti, (gps_data[0], gps_data[2]), alti.get_bearing(), path, current_time)
     
     # Process sensor data here.
     log_gps_data(current_time, gps_data)

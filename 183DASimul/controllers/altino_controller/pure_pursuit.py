@@ -2,9 +2,10 @@ import numpy as np
 import math
 import csv
 
-LOOKAHEAD_DISTANCE = 0.7
+LOOKAHEAD_DISTANCE = 0.8
 THRESHOLD_DISTANCE = 0.15
-SPEED = 60
+FRISBEE_TIMESTEP = 32
+speed = 70
 
 def get_path():
     """Retrieves the path of points from path.csv. Call this from the
@@ -19,6 +20,10 @@ def sign(d):
     else:
         return 1
 
+def mag(v):
+    """Returns the magnitude of a single vector"""
+    return np.linalg.norm(np.array(v))
+
 def is_in_bounds(p1, p2, p3):
     """Returns True if p2 is between p1 and p3, False otherwise"""
     ret = None
@@ -32,6 +37,18 @@ def is_in_bounds(p1, p2, p3):
 def distance(p1, p2):
     """returns distance between two points"""
     return np.linalg.norm(np.array(p2) - np.array(p1))
+
+def get_closest(pos, path):
+    """Returns Index of closest point on path"""
+    dist = float('inf')
+    ind = -1
+    path[0] = (float('inf'), float('inf'))
+    for idx, i in enumerate(path):
+        point_dist = distance(pos, path[idx])
+        if point_dist < dist:
+            dist = point_dist
+            ind = idx
+    return ind
 
 
 def get_intersection(center, p1, p2):
@@ -52,6 +69,8 @@ def get_intersection(center, p1, p2):
     d_z = v2_z - v1_z
     d_r = np.sqrt(d_x**2 + d_z**2)
     D = (v1_x*v2_z) - (v2_x*v1_z)
+    if d_r == 0:
+        return point
 
     # Calculate intersection points
     det = (LOOKAHEAD_DISTANCE**2)*(d_r**2) - D**2
@@ -106,26 +125,27 @@ def enhance_path(current_pos, path):
     retpath = path
     retpath.insert(0, current_pos)
     dest = retpath[-1]
-    while distance(dest, retpath[-1]) < LOOKAHEAD_DISTANCE*1.5:
-        diff = [(dest[0] - path[-2][0]), (dest[1] - path[-2][1])]
-        print(retpath[-1])
-        retpath.append([retpath[-1][0] + diff[0], retpath[-1][1] + diff[1]])
-        print(retpath[-1])
+    diff = [(dest[0] - current_pos[0]), (dest[1] - current_pos[1])]
+    while mag(diff) < LOOKAHEAD_DISTANCE*1.5:
+        diff[0] += (dest[0] - current_pos[0])
+        diff[1] += (dest[1] - current_pos[1])
+    retpath.append([retpath[-1][0] + diff[0], retpath[-1][1] + diff[1]])
     return retpath
 
-def pp_update(alti, pos, deg, path):
+def pp_update(alti, pos, deg, path, time):
     """Pure pursuit update. Takes the position of the robot,
     its bearing and a path (list of xz points) and sets its
     turning radius and speed. It his highly recommended to
     append the robots starting position to the beginning of
     the path. Path must be enhanced with enhane_path()"""
+    global speed
     la_point = None
     pth = path
     dest = pth[-2]
 
 
     # Stop near goal point
-    if distance(pos, dest) < 0.15:
+    if distance(pos, dest) < THRESHOLD_DISTANCE:
         alti.set_steer(float('inf'))
         alti.set_speed(0)
         return
@@ -135,9 +155,21 @@ def pp_update(alti, pos, deg, path):
         point = get_intersection(pos, pth[i], pth[i + 1])
         if point is not None:
             la_point = point
-    print("la_point: ", la_point)
-    print("position: ", pos)
-    
+    if la_point is None:
+        la_point = pos + (1, 0)
+
+    # Calculate speed based on parameterized frisbee path
+    car_index = get_closest(pos, path)
+    frisbee_index = int(round(time/FRISBEE_TIMESTEP))
+    if frisbee_index > len(path) - 1:
+        frisbee_index = len(path - 1)
+    print("frisbee index:", frisbee_index, "car_index: ", car_index)
+    if car_index > frisbee_index:
+        speed -= distance(path[car_index], path[frisbee_index])
+    else:
+        speed += distance(path[car_index], path[frisbee_index])
+    print("speed: ", speed)
+
     radius = get_turning_radius(pos, la_point, deg)
     alti.set_steer(radius)
-    alti.set_speed(SPEED)
+    alti.set_speed(speed)
