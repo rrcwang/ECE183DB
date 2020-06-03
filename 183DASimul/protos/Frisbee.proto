@@ -10,6 +10,7 @@ PROTO Frisbee [
   field SFBool      locked              FALSE
   field SFBool      supervisor          TRUE
   field SFString    controller          "frisbee_controller"
+  field MFColor     recognitionColors   0 1 0
 ]
 {
   Robot {
@@ -18,6 +19,7 @@ PROTO Frisbee [
     scale IS scale    
     controller IS controller
     supervisor IS supervisor
+    recognitionColors IS recognitionColors
     children [
     Shape {
       appearance DEF MATERIAL PBRAppearance {

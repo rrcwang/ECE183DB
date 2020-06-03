@@ -66,10 +66,15 @@ PROTO Altino [
         name "camera"
         spherical TRUE
         fieldOfView 1.4  # = 80 [deg]
-        width 512
-        height 272
+        width 1024
+        height 1024
         noise 0
         recognition Recognition {
+          maxRange       100
+          maxObjects     -1
+          occlusion      TRUE    # {TRUE, FALSE}
+          frameColor     1 0 0   # any color
+          frameThickness 1       # [0, inf)
         }
       }
       GPS {

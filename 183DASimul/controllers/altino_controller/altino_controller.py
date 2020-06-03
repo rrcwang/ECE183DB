@@ -11,6 +11,7 @@ import numpy as np
 import pure_pursuit as pp
 import csv
 import cv2
+import convert_angles
 
 def log_gps_data(time, vector):
     with open('gps_log.csv', 'a', newline='') as file:
@@ -66,6 +67,32 @@ while alti.step(timestep) != -1:
     gps_data      = alti.gps.getValues()
     range_data    = alti.range_finder.getRangeImageArray()
     frisbee_data  = cd.wb_detect(alti, [0, 1, 0])
+    bearing       = alti.get_bearing()
+    
+    if frisbee_data is not None:
+        xyz = frisbee_data.get_position()
+
+        # read orientations
+        measurement = frisbee_data.get_orientation()
+        car_rotation = [0,1,0,bearing]
+        sensor_rotation = [0, -0.7071, 0.7071, 3.14159]
+        print('meas')
+        print(measurement)
+
+        # rotate into world frame
+        q_measurement = convert_angles.aa2quaternion(measurement)
+        q_car_rotation = convert_angles.aa2quaternion(car_rotation)
+        q_sensor_rotation = convert_angles.aa2quaternion(sensor_rotation)
+
+        q1 = q_sensor_rotation.inverse() * q_measurement # rotate into car frame
+        q = q_car_rotation.inverse() * q1 # rotate into world frame
+
+        frisbee_orientation_aa = convert_angles.quaternion2aa(q)
+        frisbee_orientation_euler = convert_angles.quaternion2euler(q)
+        
+        print(frisbee_orientation_aa)
+        print(frisbee_orientation_euler)
+        
     #altino.camera.getImage()
     #camera_status = altino.camera.saveImage('frame.png', 0)
     current_time += timestep
@@ -87,7 +114,7 @@ while alti.step(timestep) != -1:
     #alti.set_steer(radius)
     
     # Pure Pursuit
-    pp.pp_update(alti, (gps_data[0], gps_data[2]), alti.get_bearing(), path)
+    #pp.pp_update(alti, (gps_data[0], gps_data[2]), alti.get_bearing(), path)
     
     # Process sensor data here.
     log_gps_data(current_time, gps_data)

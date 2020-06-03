@@ -5,7 +5,7 @@ from controller import Robot
 from controller import Supervisor
 import FrisPy
 import numpy as np
-import euler_to_AA
+import convert_angles
 
 # create the Supervisor instance.
 supervisor = Supervisor()
@@ -51,11 +51,11 @@ position_data[:,1] += 0.025
 np.savetxt("position_data.csv",position_data,delimiter=',')
 
 rot = trajectory[:,6:9]
-rotation_data = euler_to_AA.convert(rot)
+rotation_data = convert_angles.convert_euler2aa(rot)
 
 
 time_index = 0
-read = True
+read = False
 # Main loop:
 # - perform simulation steps until Webots is stopping the controller
 while supervisor.step(timestep) != -1:

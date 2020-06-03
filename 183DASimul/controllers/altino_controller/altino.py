@@ -5,6 +5,7 @@ from controller import Motor
 from controller import Camera
 import numpy as np
 import math
+import state_estimator
 
 # Altino Robot Class
 class Altino(Robot):
@@ -121,10 +122,10 @@ class Altino(Robot):
         at https://www.cyberbotics.com/doc/reference/compass?tab-language=python"""
         north = self.compass.getValues()
         rad = math.atan2(north[0], north[2])
-        bearing = (rad - math.pi/2)/(math.pi/180)
-        if bearing < 0:
-            bearing = bearing + 360
-        return bearing
+        
+        return np.pi/2 - rad
+
+    
 
 def distance(p1, p2):
     """returns distance between two points"""
