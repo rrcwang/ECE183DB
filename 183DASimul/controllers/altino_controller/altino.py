@@ -13,7 +13,7 @@ class Altino(Robot):
     def __init__(self):
         super(Altino, self).__init__()
         # define constants
-        self.timeStep = 64
+        self.timeStep = 32
         self.maxSpeed = float('inf')
         self.maxSteer = 1.34
         self.minSteer = -1.34
@@ -37,8 +37,8 @@ class Altino(Robot):
         Motor.setPosition(self.rear_right_motor, float('inf'))
         Motor.setVelocity(self.rear_right_motor, 0)
         Motor.setVelocity(self.rear_left_motor, 0)
-        Motor.setAcceleration(self.rear_right_motor, 200)
-        Motor.setAcceleration(self.rear_left_motor, 200)
+        Motor.setAcceleration(self.rear_right_motor, 400)
+        Motor.setAcceleration(self.rear_left_motor, 400)
 
         # get sensors
         self.gps = self.getGPS('gps')
