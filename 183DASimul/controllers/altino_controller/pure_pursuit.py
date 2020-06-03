@@ -5,6 +5,10 @@ import csv
 LOOKAHEAD_DISTANCE = 0.8
 THRESHOLD_DISTANCE = 0.15
 FRISBEE_TIMESTEP = 32
+P_COEFF = 10
+D_COEFF = 30
+#pid control variables
+last_dist = 0
 speed = 70
 
 def get_path():
@@ -138,7 +142,7 @@ def pp_update(alti, pos, deg, path, time):
     turning radius and speed. It his highly recommended to
     append the robots starting position to the beginning of
     the path. Path must be enhanced with enhane_path()"""
-    global speed
+    global speed, last_dist
     la_point = None
     pth = path
     dest = pth[-2]
@@ -164,11 +168,19 @@ def pp_update(alti, pos, deg, path, time):
     if frisbee_index > len(path) - 1:
         frisbee_index = len(path - 1)
     print("frisbee index:", frisbee_index, "car_index: ", car_index)
-    if car_index > frisbee_index:
-        speed -= distance(path[car_index], path[frisbee_index])
+    dist = distance(path[car_index], path[frisbee_index])
+    if last_dist is not None:
+        diff = dist - last_dist
     else:
-        speed += distance(path[car_index], path[frisbee_index])
+        diff = 0
+    if car_index > frisbee_index:
+        speed -= dist*P_COEFF + diff*D_COEFF
+    else:
+        speed += dist*P_COEFF + diff*D_COEFF
+    last_dist = dist
     print("speed: ", speed)
+    print("dist: ", dist)
+    print("diff: ", diff)
 
     radius = get_turning_radius(pos, la_point, deg)
     alti.set_steer(radius)
