@@ -125,6 +125,13 @@ class Altino(Robot):
         
         return np.pi/2 - rad
 
+    def initialize_state_estimator(self,initial_state_estimate):
+        """Initialize state estimator with given state estimate
+        """
+        self.state_estimator = state_estimator.StateEstimator(initial_state_estimate)
+
+    def getSE(self):
+        return self.state_estimator
     
 
 def distance(p1, p2):

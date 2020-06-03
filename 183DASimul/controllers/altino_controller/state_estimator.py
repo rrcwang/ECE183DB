@@ -1,4 +1,5 @@
 import numpy as np
+import numpy.linalg as linalg
 import FrisPy as fp
 
 Q_COVAR = np.eye(12)*0.2
@@ -91,9 +92,10 @@ class StateEstimator:
             apo_state_plus_eps[i] += eps
 
             self.disc.update_coordinates(apo_state_plus_eps)
-            times, traj = fp.get_trajectory(self.disc, [0, 0.001], full_trajectory=True)
-
-            df_ds = (traj[1] - a_priori_state) / eps
+            tt = np.linspace(0,0.006,7)
+            times, traj = fp.get_trajectory(self.disc, tt, full_trajectory=True)
+        
+            df_ds = (traj[6] - a_priori_state) / eps
 
             jacobian[:,i] = df_ds
 
@@ -101,29 +103,42 @@ class StateEstimator:
 
         return np.array(jacobian)
 
+    def predict_path(self,state):
+        ''' Given some state, project the path forward by 2 seconds
+        '''
+        self.disc.update_coordinates(self.state_estimate.aslist())
+        tt = np.linspace(0,2,2001)
+        times, traj = fp.get_trajectory(self.disc, tt, full_trajectory=True)
+        
+        traj = np.array(traj)
 
-    def dynamics_propagation(self, a_posteori_state):
+        np.savetxt("projected.csv",traj,delimiter=',')
+
+        return np.column_stack((traj[:,0],traj[:,1]))
+
+    def dynamics_propagation(self):
         ''' Find the a priori state estimate given the previous a posteori state 
         '''
         if self.SE_is_a_priori:
             raise Exception("Steps computed out of order: dynamics_propogation was called when measurement_update was expected.")
 
         # Using FrisPy, calculates one time step forward.
-        self.disc.update_coordinates(a_posteori_state)
-        times, traj = fp.get_trajectory(self.disc, [0, 0.001], full_trajectory=True)
+        self.disc.update_coordinates(self.state_estimate.aslist())
+        tt = np.linspace(0,0.006,7)
+        times, traj = fp.get_trajectory(self.disc, tt, full_trajectory=True)
         
         F_jacobian = self.calc_F_jacobian(self.state_estimate.aslist(),traj[1])
 
         # Assign new estimate
         self.SE_is_a_priori = True
-        self.state_estimate.update_state(traj[1])
+        self.state_estimate.update_state(traj[6])
 
         # Compute and update the next covariance estimate
         old_P_covar = self.P_covar_estimate
         
         self.P_covar_estimate = F_jacobian @ old_P_covar @ F_jacobian.transpose() + Q_COVAR
 
-        return traj[1]
+        return traj[6]
     
     def measurement_update(self,measurement):
         ''' For some a priori state estimate and measurement,
@@ -162,3 +177,9 @@ class StateEstimator:
         self.SE_is_a_priori = False
 
         return self.state_estimate.aslist()
+
+    def get_P_covar(self):
+        return self.P_covar_estimate
+
+    def get_error_magnitude(self):
+        return linalg.norm(self.P_covar_estimate)

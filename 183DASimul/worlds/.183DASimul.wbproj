@@ -7,7 +7,7 @@ centralWidgetVisible: 1
 selectionDisabled: 0
 viewpointLocked: 0
 orthographicViewHeight: 1
-textFiles: 3 "protos/Frisbee.proto" "controllers/frisbee_controller/frisbee_controller.py" "protos/Altino.proto" "controllers/altino_controller/altino_controller.py"
+textFiles: 1 "protos/Frisbee.proto" "controllers/frisbee_controller/frisbee_controller.py" "protos/Altino.proto" "controllers/altino_controller/altino_controller.py"
 renderingDevicePerspectives: vehicle:camera;1;0.21875;0;0.708387
 renderingDevicePerspectives: vehicle:range finder;1;0.27832;0.670872;0.629677
 renderingDevicePerspectives: vehicle:display;1;0.519531;0;0

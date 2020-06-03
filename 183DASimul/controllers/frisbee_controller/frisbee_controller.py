@@ -55,7 +55,7 @@ rotation_data = convert_angles.convert_euler2aa(rot)
 
 
 time_index = 0
-read = False
+read = True
 # Main loop:
 # - perform simulation steps until Webots is stopping the controller
 while supervisor.step(timestep) != -1:

@@ -2,21 +2,21 @@ import numpy as np
 import quaternion
 
 def aa2euler(axis_angle):
-    z,x,y,angle = axis_angle
+    x,y,z,angle = axis_angle
 
     if np.abs(np.pi*2-angle) < 0.001:
         angle = 0
 
    # q_robot = np.quaternion(np.cos(heading/2),0,0,np.sin(heading/2))
 
-    qw = np.cos(angle/2)
-    qx = x*np.sin(angle/2)
-    qy = y*np.sin(angle/2)
-    qz = z*np.sin(angle/2)
+    ca = np.cos(angle)
+    sa = np.sin(angle)
 
-    q = np.quaternion(qw,qx,qy,qz)
-    q = q.normalized()
-    R = np.array(quaternion.as_rotation_matrix(q))
+    R =[[ ca+(1-ca)*x**2, x*y*(1-ca)-z*sa, x*z*(1-ca)+y*sa ],
+        [ x*y*(1-ca)+z*sa, ca+(1-ca)*y**2, y*z*(1-ca)-x*sa ],
+        [ x*z*(1-ca)-y*sa, y*z*(1-ca)+x*sa, ca+(1-ca)*z**2 ] ]
+
+    R = np.array(R)
     
     st = R[2,0]
     ct = R[0,0]
