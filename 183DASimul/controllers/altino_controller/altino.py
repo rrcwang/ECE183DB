@@ -5,6 +5,7 @@ from controller import Motor
 from controller import Camera
 import numpy as np
 import math
+import state_estimator
 
 # Altino Robot Class
 class Altino(Robot):
@@ -46,7 +47,7 @@ class Altino(Robot):
         self.camera_led = self.getLED('camera led')
         self.compass = self.getCompass('compass')
 
-        # get display and attach camera
+        # get display for visualizations
         self.display = self.getDisplay('display')
 
     # Motor Functions
@@ -96,8 +97,12 @@ class Altino(Robot):
             Motor.setPosition(self.left_steer, angle_left)
             Motor.setPosition(self.right_steer, angle_right)
         else:
-            print("error: requested turn radius too small")
-            self.target_radius = np.inf
+            print("correcting radius...")
+            if angle_right > self.maxSteer or angle_left > self.maxSteer:
+                self.target_radius += 0.1
+            elif angle_right < self.minSteer or angle_left < self.minSteer:
+                self.target_radius -= 0.1
+            self.target_speed = 20
 
         if abs(rear_left_speed) <= self.maxSpeed and abs(rear_right_speed) <= self.maxSpeed:
             Motor.setVelocity(self.rear_left_motor, rear_left_speed)
@@ -121,10 +126,17 @@ class Altino(Robot):
         at https://www.cyberbotics.com/doc/reference/compass?tab-language=python"""
         north = self.compass.getValues()
         rad = math.atan2(north[0], north[2])
-        bearing = (rad - math.pi/2)/(math.pi/180)
-        if bearing < 0:
-            bearing = bearing + 360
-        return bearing
+        
+        return np.pi/2 - rad
+
+    def initialize_state_estimator(self,initial_state_estimate):
+        """Initialize state estimator with given state estimate
+        """
+        self.state_estimator = state_estimator.StateEstimator(initial_state_estimate)
+
+    def getSE(self):
+        return self.state_estimator
+    
 
 def distance(p1, p2):
     """returns distance between two points"""
