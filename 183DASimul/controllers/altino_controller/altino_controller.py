@@ -103,7 +103,7 @@ while alti.step(timestep) != -1:
     state_estimator.measurement_update(frisbee_measurement)
 
     SE = state_estimator.get_state().aslist()
-    #print(SE)
+    print(SE)
 
     #altino.camera.getImage()
     #camera_status = altino.camera.saveImage('frame.png', 0)
@@ -111,7 +111,7 @@ while alti.step(timestep) != -1:
 
     if current_time % 5:
         ase = state_estimator.predict_path(SE)
-        #print(ase)
+        print(ase)
 
     # Read Path
     path_raw = np.loadtxt('../frisbee_controller/position_data.csv', delimiter = ',')

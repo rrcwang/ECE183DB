@@ -3,8 +3,10 @@ This file contains the disc object, which interfaces with the equations of motio
 """
 
 import numpy as np
+import numpy.linalg as linalg
 from scipy.integrate import odeint
 from . import coefficient_model
+import quaternion
 
 """
 Constants:
@@ -58,19 +60,33 @@ class Disc(object):
     # convert angles
     self.phi=phi
     self.theta=theta
-    self.gamma=gamma    
-    self.calc_trig_functions()
-    sp,cp = self.sin_phi,self.cos_phi
-    st,ct = self.sin_theta,self.cos_theta
-    np.array([[ct,sp*st,-st*cp],
-              [0,cp,sp],
-              [st,-sp*ct,cp*ct]])
+    self.gamma=gamma
+    sp,cp = np.sin(phi),np.cos(phi)
+    st,ct = np.sin(theta),np.cos(theta)
+    self.sin_theta,self.cos_theta = st,ct
+    self.rotation_matrix = np.array([[ct  ,sp*st  ,-st*cp],
+                                     [0   ,cp     ,sp],
+                                     [st  ,-sp*ct ,cp*ct]])
+    q = quaternion.from_rotation_matrix(self.rotation_matrix).normalized()
+    self.q0,self.q1,self.q2,self.q3 = q.w,q.x,q.y,q.z
+    '''
+    v = [vx,vy,vz]
+    zbhat = self.rotation_matrix[2] #z body hat, expressed in the lab frame
+    v_dot_zbhat = np.dot(v,zbhat)
+    v_in_plane = v - (zbhat*v_dot_zbhat)
+    xbhat = v_in_plane/np.linalg.norm(v_in_plane) #x body hat, expressed in the lab frame
+    ybhat = np.cross(zbhat,xbhat) #y body hat, expressed in the lab frame'''
 
-    # convert angular velocity
+    # convert angular velocity wxl, wyl, wzl in lab frame
     self.phidot=phidot
     self.thetadot=thetadot
     self.gammadot=gammadot
-    
+    st,ct = self.sin_theta,self.cos_theta
+    w_frisframe =  np.array([self.phidot*ct,
+                             self.thetadot,
+                             self.phidot*st + self.gammadot])
+    w_labframe = np.dot(w_frisframe, self.rotation_matrix)
+    self.wxl,self.wyl,self.wzl = w_labframe
 
     self.debug=debug
     self.has_model=False
@@ -103,28 +119,68 @@ class Disc(object):
   def update_coordinates(self,coordinates):
     """Given some new coordinates, update the coordinates
     """
-    x,y,z,vx,vy,vz,phi,theta,gamma,phidot,thetadot,gammadot = coordinates
+    #x,y,z,vx,vy,vz,phi,theta,gamma,phidot,thetadot,gammadot = coordinates
+    x,y,z,vx,vy,vz,q0,q1,q2,q3,wxl,wyl,wzl = coordinates
     self.x = x 
     self.y = y
     self.z = z
     self.vx = vx
     self.vy = vy
     self.vz = vz
+    
+    ### BEGIN CHANGE ###
+    '''
     self.phi = phi
     self.theta = theta
     self.gamma = gamma
-    self.phidot = phidot
-    self.thetadot = thetadot
-    self.gammadot = gammadot
+
+    self.calc_trig_functions()
+    sp,cp = self.sin_phi,self.cos_phi
+    st,ct = self.sin_theta,self.cos_theta
+    self.rotation_matrix = np.array([[ct  ,sp*st  ,-st*cp],
+                                     [0   ,cp     ,sp],
+                                     [st  ,-sp*ct ,cp*ct]])
+    q = quaternion.from_rotation_matrix(self.rotation_matrix)'''
+    self.q0,self.q1,self.q2,self.q3 = q0,q1,q2,q3
+
+    # convert angular velocity wxl, wyl, wzl in lab frame
+    '''
+    self.phidot=phidot
+    self.thetadot=thetadot
+    self.gammadot=gammadot
+    st,ct = self.sin_theta,self.cos_theta
+    w_frisframe =  np.array([self.phidot*ct,
+                             self.thetadot,
+                             self.phidot*st + self.gammadot])
+    w_labframe = np.dot(w_frisframe, self.rotation_matrix)'''
+    self.wxl, self.wyl, self.wzl = wxl,wyl,wzl
+    print(wxl,wyl,wzl)
+
+    #self.phidot = phidot
+    #self.thetadot = thetadot
+    #self.gammadot = gammadot
     self.update_data_fields()
     return
 
   def get_coordinates(self):
     """Return the current coordinates of the disc.
     """
+    '''
     return np.array([self.x,self.y,self.z,self.vx,self.vy,self.vz,
                      self.phi,self.theta,self.gamma,
-                     self.phidot,self.thetadot,self.gammadot])
+                     self.phidot,self.thetadot,self.gammadot])'''
+    return np.array([self.x,self.y,self.z,self.vx,self.vy,self.vz,
+                     self.q0,self.q1,self.q2,self.q3,
+                     self.wxl,self.wyl,self.wzl])
+
+  def get_inertia_tensor(self):
+    I_body = np.array([[Ixx,0,0],
+                       [0,Iyy,0],
+                       [0,0,Izz]])
+    I_body_inv = linalg.inv(I_body)
+
+    R = self.rotation_matrix
+    return [R @ I_body @ R.T, R @ I_body_inv @ R.T]
 
   def update_data_fields(self):
     """Update the data fields in the disc.
@@ -135,33 +191,52 @@ class Disc(object):
     self.vhat = self.velocity/np.linalg.norm(self.velocity)
     self.v2 = np.dot(self.velocity,self.velocity)
     self.rotation_matrix = self.calc_rotation_matrix()
+    self.inertia_tensor, self.inverse_inertial_tensor = self.get_inertia_tensor() # NEW
     self.xbhat,self.ybhat,self.zbhat = self.calc_body_hat_vectors()
     self.angle_of_attack = self.calc_angle_of_attack()
-    self.angular_velocity_frisframe = self.calc_angular_velocity_frisframe()
-    self.angular_velocity_labframe = np.dot(self.angular_velocity_frisframe,self.rotation_matrix)
+    #self.angular_velocity_frisframe = self.calc_angular_velocity_frisframe()
+    self.angular_velocity_labframe = np.array([self.wxl,self.wyl,self.wzl])   # DONE
     self.wxb,self.wyb,self.wzb = self.calc_angular_velocity()
+
+    q = np.quaternion(self.q0,self.q1,self.q2,self.q3).normalized()
+    w_lab = np.quaternion(0,self.wxl,self.wyl,self.wzl).normalized()
+    self.q_dot = 0.5*(q*w_lab)
+
+    self.R_dot = self.calc_R_dot()
+
     return
 
   def calc_trig_functions(self):
     """Calculates the trig functions of the euler angles of the disc.
     """
+    '''
     self.sin_phi = np.sin(self.phi)
     self.cos_phi = np.cos(self.phi)
     self.sin_theta = np.sin(self.theta)
-    self.cos_theta = np.cos(self.theta)
+    self.cos_theta = np.cos(self.theta)'''
+    q0,q1,q2,q3 = self.q0,self.q1,self.q2,self.q3
+    self.sin_phi = 2*(q2*q3-q0*q1)
+    self.cos_phi = q0**2 - q1**2 + q2**2 - q3**2
+    self.sin_theta = 2*(q1*q3-q0*q2)
+    self.cos_theta = q0**2 + q1**2 - q2**2 - q3**2
     return
-
-  def calc_rotation_matrix(self):
+  
+  def calc_rotation_matrix(self): # DONE
     """Calculates the euler rotation matrix.
     R(phi,theta) = Ry(theta)Rx(phi)
     
     See https://en.wikipedia.org/wiki/Davenport_chained_rotations. 
     """
+    '''
     sp,cp = self.sin_phi,self.cos_phi
     st,ct = self.sin_theta,self.cos_theta
     return np.array([[ct,sp*st,-st*cp],
                      [0,cp,sp],
-                     [st,-sp*ct,cp*ct]])
+                     [st,-sp*ct,cp*ct]])'''
+
+    ## BEGIN CHANGE
+    q = np.quaternion(self.q0,self.q1,self.q2,self.q3)
+    return quaternion.as_rotation_matrix(q)
 
   def calc_body_hat_vectors(self):
     """Calculates the unit (hat) vectors fixed to the disc (excluding spin) in terms of the lab frame, or [R^T dot \hat{x}_F]
@@ -197,11 +272,24 @@ class Disc(object):
     """Calculates the angular velocity along the body unit vectors as expressed in the lab frame.
     """
     av_labframe = self.angular_velocity_labframe
+    '''
     xbhat,ybhat,zbhat = self.xbhat,self.ybhat,self.zbhat
     wxb = np.dot(av_labframe,xbhat)
     wyb = np.dot(av_labframe,ybhat)
     wzb = np.dot(av_labframe,zbhat)
+    '''
+    body_basis = np.column_stack([self.xbhat,self.ybhat,self.zbhat])
+    wxb,wyb,wzb = body_basis.T @ av_labframe
+
     return [wxb,wyb,wzb]
+
+  def calc_R_dot(self):
+    w_L = self.angular_velocity_labframe
+    R = self.rotation_matrix
+    R_dot0 = np.cross(w_L,R[:,0])
+    R_dot1 = np.cross(w_L,R[:,1])
+    R_dot2 = np.cross(w_L,R[:,2])
+    return np.column_stack((R_dot0,R_dot1,R_dot2))
 
   def get_acceleration(self):
     """Calculate acceleration of the positions.
@@ -236,12 +324,13 @@ class Disc(object):
     C_z = self.coefficients.C_z(wzb)
     torque_x = C_x*torque_amplitude*self.xbhat
     torque_y = C_y*torque_amplitude*self.ybhat
-    torque_z = C_z*torque_amplitude*np.array([0,0,1.])
-    print(torque_x+torque_y+torque_z)
+    torque_z = C_z*torque_amplitude*self.zbhat
     #Rotate into the disc frame.
-    total_torque=np.dot(self.rotation_matrix,torque_x+torque_y)+torque_z
+    #total_torque=np.dot(self.rotation_matrix,torque_x+torque_y+torque_z)
+    return torque_x+torque_y+torque_z
     #Optional: turn off rotations
     #total_torque *= 0
+    '''
     if self.debug:
       print("In get_torque")
       print("\tAmplitude:",torque_amplitude)
@@ -262,12 +351,32 @@ class Disc(object):
       print("\tPitch amp:",C_y*torque_amplitude)
       print("\tSpin amp:",C_z*torque_amplitude)
       print("\ttotal_torque:",total_torque)
-    return total_torque
+    return total_torque'''
 
   def ang_acceleration(self):
     """Calculate angular accelerations in radians/s^2. See, e.g. Hummel 2003.
     """
-    total_torque = self.get_torque()
+    lab_total_torque = self.get_torque()
+    R = self.rotation_matrix
+    R_dot = self.R_dot
+    total_torque = R @ lab_total_torque
+
+    # CHANGED
+    I = self.inertia_tensor
+    I_inv = self.inverse_inertial_tensor    
+    I_body = np.array([[Ixx,0,0],
+                       [0,Iyy,0],
+                       [0,0,Izz]])
+
+    dI = (R_dot @ I_body @ R.T) + (R @ I_body @ R_dot.T)
+    
+    w_labframe = np.array([self.wxl, self.wyl, self.wzl])
+    #product = np.cross(w_labframe,np.dot(I,w_labframe))##### TODO
+    dw_labframe = I_inv @ (lab_total_torque - dI @ w_labframe)
+
+    return dw_labframe
+
+    '''
     st,ct = self.sin_theta,self.cos_theta
     phidot,thetadot,gammadot = self.phidot,self.thetadot,self.gammadot
     phi_dd = (total_torque[0]+2*Ixy*thetadot*phidot*st-Izz*thetadot*(phidot*st+gammadot))/(ct*Ixy)
@@ -278,16 +387,17 @@ class Disc(object):
       print("\tphi_dd:",2*Ixy*thetadot*phidot*st,Izz*thetadot*(phidot*st+gammadot))
       print("\ttheta_dd:",Izz*phidot*ct*(phidot*st+gammadot),Ixy*phidot**2*ct*st)
       print("\tgamma_dd:",-Izz*(phidot*thetadot*ct+phi_dd*st))
-    return np.array([phi_dd,theta_dd,gamma_dd])
+    return np.array([phi_dd,theta_dd,gamma_dd])'''
 
   def derivatives_array(self):
     """Compute the derivatives of all coordinates.
     """
-    derivatives = np.zeros(12)
+    derivatives = np.zeros(13)
     derivatives[0:3] = self.velocity
     derivatives[3:6] = self.get_acceleration()
-    derivatives[6:9] = self.angle_dots
-    derivatives[9:12]= self.ang_acceleration()
+    q_dot = self.q_dot
+    derivatives[6:10] = [q_dot.w,q_dot.x,q_dot.y,q_dot.z]
+    derivatives[10:13]= self.ang_acceleration()
     if self.debug:
       print("In derivatives_array:")
       print("\tvelocities: ",derivatives[0:3])
