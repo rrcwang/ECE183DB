@@ -103,7 +103,7 @@ while alti.step(timestep) != -1:
     state_estimator.measurement_update(frisbee_measurement)
 
     SE = state_estimator.get_state().aslist()
-    print(SE)
+    #print(SE)
 
     #altino.camera.getImage()
     #camera_status = altino.camera.saveImage('frame.png', 0)
@@ -111,12 +111,12 @@ while alti.step(timestep) != -1:
 
     if current_time % 5:
         ase = state_estimator.predict_path(SE)
-        print(ase)
+        #print(ase)
 
     # Read Path
     path_raw = np.loadtxt('../frisbee_controller/position_data.csv', delimiter = ',')
     path = np.delete(path_raw, 1, 1).tolist()
-    path = pp.enhance_path(car_position, path)
+    path = pp.enhance_path((gps_data[0], gps_data[2]), path)
     
     # Pure Pursuit
     pp.pp_update(alti, (gps_data[0], gps_data[2]), alti.get_bearing(), path, current_time/2)

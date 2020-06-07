@@ -3,7 +3,7 @@ import numpy as np
 import math
 import csv
 
-LOOKAHEAD_DISTANCE = 0.8
+LOOKAHEAD_DISTANCE = 0.4
 THRESHOLD_DISTANCE = 0.15
 FRISBEE_TIMESTEP = 32
 DISP_CONV_FACTOR = 500/15
@@ -59,7 +59,7 @@ def get_closest(pos, path):
 
 def pos2px(ind):
     """converts passed arg to pixel location on display"""
-    return int(round((ind + 7.5)*DISP_CONV_FACTOR))
+    return 500 - int(round((ind + 7.5)*DISP_CONV_FACTOR))
 
 
 def get_intersection(center, p1, p2):
@@ -140,6 +140,8 @@ def enhance_path(current_pos, path):
     while mag(diff) < LOOKAHEAD_DISTANCE*1.5:
         diff[0] += (dest[0] - current_pos[0])
         diff[1] += (dest[1] - current_pos[1])
+    print("pos: ", current_pos)
+    print("diff: ", diff)
     retpath.append([retpath[-1][0] + diff[0], retpath[-1][1] + diff[1]])
     return retpath
 

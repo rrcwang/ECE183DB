@@ -14,7 +14,7 @@ class Altino(Robot):
         super(Altino, self).__init__()
         # define constants
         self.timeStep = 32
-        self.maxSpeed = float('inf')
+        self.maxSpeed = 200
         self.maxSteer = 1.34
         self.minSteer = -1.34
 
@@ -58,6 +58,8 @@ class Altino(Robot):
             self.actuate()
         else:
             print("error: requested speed exceeds max speed: ", self.maxSpeed)
+            self.target_speed = self.maxSpeed
+            self.actuate()
 
     def set_steer(self, radius):
         """sets target turning radius"""
@@ -72,6 +74,8 @@ class Altino(Robot):
 
     def actuate(self):
         """calculates wheel speeds and steers based on target speed and radius"""
+        #print("target speed: ", self.target_speed)
+        #print("target radius: ", self.target_radius)
         # Check for infinite turn radius
         if self.target_radius == float('inf'):
             Motor.setPosition(self.left_steer, 0)
@@ -87,7 +91,8 @@ class Altino(Robot):
         else:
             angle_right = angle(np.array([0, -1]), self.radius_pos - self.right_rear_pos) - np.pi/2
             angle_left = angle(np.array([0, -1]), self.radius_pos - self.left_rear_pos) - np.pi/2
-
+        #print("angle right: ", angle_right)
+        #print("angle left: ", angle_left)
         # Calculate wheel speeds based on target radius
         rear_right_speed = (self.target_speed/self.target_radius)*(self.target_radius - 0.04)
         rear_left_speed = (self.target_speed/self.target_radius)*(self.target_radius + 0.04)
@@ -99,9 +104,13 @@ class Altino(Robot):
         else:
             print("correcting radius...")
             if angle_right > self.maxSteer or angle_left > self.maxSteer:
-                self.target_radius += 0.1
+                self.target_radius += 0.5
+                self.radius_pos = np.array([self.target_radius, 0])
+                self.actuate()
             elif angle_right < self.minSteer or angle_left < self.minSteer:
-                self.target_radius -= 0.1
+                self.target_radius -= 0.5
+                self.radius_pos = np.array([self.target_radius, 0])
+                self.actuate()
             self.target_speed = 20
 
         if abs(rear_left_speed) <= self.maxSpeed and abs(rear_right_speed) <= self.maxSpeed:
