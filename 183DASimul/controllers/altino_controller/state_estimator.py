@@ -2,9 +2,14 @@ import numpy as np
 import numpy.linalg as linalg
 import FrisPy as fp
 
-Q_COVAR = np.eye(12)*0.2
+scaling_factor = 0.2
 
-R_COVAR = np.eye(6)*0.2
+Q_COVAR = np.eye(12)*0.2
+Q_COVAR[6,6] = Q_COVAR[6,6]*0.3
+Q_COVAR[7,7] = Q_COVAR[7,7]*0.3
+Q_COVAR[8,8] = Q_COVAR[8,8]*0.3
+
+R_COVAR = np.eye(6)*0.05
 
 class State:
     def __init__(self, x,y,z,dx,dy,dz,phi,theta,gamma,dphi,drho,dgamma):
@@ -57,7 +62,7 @@ class StateEstimator:
         # We will use the assumption that the state estimate has:
         #       1. Uncorrelated initial conditions
         #       2. High uncertainty
-        self.P_covar_estimate = np.eye(12)*9999
+        self.P_covar_estimate = np.eye(12)*100
 
         # Keeps track of whether the state is a priori or a posteriori,
         # in case the Kalman filtering steps are taken out of order
@@ -107,14 +112,14 @@ class StateEstimator:
         ''' Given some state, project the path forward by 2 seconds
         '''
         self.disc.update_coordinates(self.state_estimate.aslist())
-        tt = np.linspace(0,2,2001)
+        tt = np.linspace(0,2,2001)*6
         times, traj = fp.get_trajectory(self.disc, tt, full_trajectory=True)
         
-        traj = np.array(traj)
+        traj = np.array(traj)*scaling_factor
 
         np.savetxt("projected.csv",traj,delimiter=',')
 
-        return np.column_stack((traj[:,0],traj[:,1]))
+        return list(np.column_stack((traj[:,0],traj[:,1])))
 
     def dynamics_propagation(self):
         ''' Find the a priori state estimate given the previous a posteori state 
@@ -146,6 +151,8 @@ class StateEstimator:
         '''
         if not self.SE_is_a_priori:
             raise Exception("Steps computed out of order: measurement_update was called when dynamics_propogation was expected.")
+
+        pos_measurement = measurement[0:2] * 5
         
         # format predicted measurement
         SE = np.array(self.state_estimate.aslist())

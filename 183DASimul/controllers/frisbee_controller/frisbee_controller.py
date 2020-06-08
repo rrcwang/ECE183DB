@@ -27,8 +27,8 @@ ground_offset = 0.25
 sim_times = np.linspace(0,N,N+1) * frisbee_timestep / 1000
 
 init_conditions = [ 0,      -4.2,       1,        # x, y, z
-                    5,      7,          0,          # dx, dy, dz
-                    0,      -0.3,       0,          # phi, theta, gamma
+                    0,      7,          0,          # dx, dy, dz
+                    0,      0,       0,          # phi, theta, gamma
                     0,      0,          100 ]       # phidot, thetadot, gammadot
 
 # generate flight path trajectory
@@ -68,6 +68,8 @@ while supervisor.step(timestep) != -1:
             
             rotation = rotation_data[time_index,:].tolist()
             rotation_field.setSFRotation(rotation)
+
+            print(trajectory[time_index,:])
             
             time_index += 1
     except(IndexError):

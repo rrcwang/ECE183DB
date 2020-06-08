@@ -59,9 +59,9 @@ current_time = 0
 pos = alti.gps.getValues() # get initial position
 
 initial_state_guess = [ 0,      -4.2,       1,        # x, y, z
-                        5,      7,          0,          # dx, dy, dz
-                        0,      -0.3,       0,          # phi, theta, gamma
-                        0,      0,          100 ]
+                    0,      1,          0,          # dx, dy, dz
+                    0,      0,       0,          # phi, theta, gamma
+                    0,      0,          1 ] 
 alti.initialize_state_estimator(initial_state_guess)
 state_estimate = initial_state_guess
 state_estimator = alti.getSE()
@@ -74,10 +74,10 @@ while alti.step(timestep) != -1:
     range_data    = alti.range_finder.getRangeImageArray()
     frisbee_data  = cd.wb_detect(alti, [0, 1, 0])
     bearing       = alti.get_bearing()    
-    car_position  = alti.gps.getValues()    
+    car_position  = (gps_data[0], gps_data[2]) 
     current_time += timestep
     
-    frisbee_measurement = [0,0,0,0,0,0]
+    frisbee_measurement = [0,-4.2,1,0,0,0]
     if frisbee_data is not None:
         xyz = frisbee_data.get_position()
 
@@ -96,30 +96,35 @@ while alti.step(timestep) != -1:
 
         frisbee_orientation_euler = convert_angles.quaternion2euler(q)
         
-        location_measurement = [car_position[0]-xyz[0], car_position[1]-xyz[2]+0.05, car_position[2]-xyz[1]]
+        location_measurement = [gps_data[0]-xyz[0], gps_data[1]-xyz[2]+0.05, gps_data[2]-xyz[1]]
         frisbee_measurement = location_measurement + frisbee_orientation_euler
 
+    
     state_estimator.dynamics_propagation()
-    state_estimator.measurement_update(frisbee_measurement)
 
-    SE = state_estimator.get_state().aslist()
-    print(SE)
+    print("A priori state estimate: ")
+    print(state_estimator.get_state().aslist())
+
+    state_estimator.measurement_update(frisbee_measurement)
+    print("A posteori state estimate: ")
+    SE_post = state_estimator.get_state().aslist()
+    print(SE_post)
+    #print(state_estimator.get_P_covar())
+    np.savetxt("p_covar.csv",state_estimator.get_P_covar(),delimiter=',')
 
     #altino.camera.getImage()
     #camera_status = altino.camera.saveImage('frame.png', 0)
     current_time += timestep
 
-    if current_time % 5:
-        ase = state_estimator.predict_path(SE)
-        print(ase)
+    predicted_path = state_estimator.predict_path(SE_post)
 
     # Read Path
-    path_raw = np.loadtxt('../frisbee_controller/position_data.csv', delimiter = ',')
-    path = np.delete(path_raw, 1, 1).tolist()
-    path = pp.enhance_path(car_position, path)
+    #path_raw = np.loadtxt('../frisbee_controller/position_data.csv', delimiter = ',')
+    #path = np.delete(path_raw, 1, 1).tolist()
+    path = pp.enhance_path(car_position, predicted_path)
     
     # Pure Pursuit
-    pp.pp_update(alti, (gps_data[0], gps_data[2]), alti.get_bearing(), path, current_time)
+    #pp.pp_update(alti, (gps_data[0], gps_data[2]), alti.get_bearing(), path, current_time)
     
     # Process sensor data here.
     log_gps_data(current_time, gps_data)
