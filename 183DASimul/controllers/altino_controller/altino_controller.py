@@ -116,21 +116,20 @@ while alti.step(timestep) != -1:
     #camera_status = altino.camera.saveImage('frame.png', 0)
     current_time += timestep
 
-    predicted_path = state_estimator.predict_path(SE_post)
+    if current_time % 5:
+        ase = state_estimator.predict_path(SE)
+        #print(ase)
 
     # Read Path
-    #path_raw = np.loadtxt('../frisbee_controller/position_data.csv', delimiter = ',')
-    #path = np.delete(path_raw, 1, 1).tolist()
-    path = pp.enhance_path(car_position, predicted_path)
+    path_raw = np.loadtxt('../frisbee_controller/position_data.csv', delimiter = ',')
+    path = np.delete(path_raw, 1, 1).tolist()
+    path = pp.enhance_path((gps_data[0], gps_data[2]), path)
     
     # Pure Pursuit
-    #pp.pp_update(alti, (gps_data[0], gps_data[2]), alti.get_bearing(), path, current_time)
+    pp.pp_update(alti, (gps_data[0], gps_data[2]), alti.get_bearing(), path, current_time/2)
     
     # Process sensor data here.
     log_gps_data(current_time, gps_data)
-
-    # Enter here functions to send actuator commands, like:
-    #  motor.setPosition(10.0)
     pass
 
 # Enter here exit cleanup code.

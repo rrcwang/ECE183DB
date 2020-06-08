@@ -1,12 +1,14 @@
+from controller import Display
 import numpy as np
 import math
 import csv
 
-LOOKAHEAD_DISTANCE = 0.8
+LOOKAHEAD_DISTANCE = 0.4
 THRESHOLD_DISTANCE = 0.15
 FRISBEE_TIMESTEP = 32
-P_COEFF = 10
-D_COEFF = 30
+DISP_CONV_FACTOR = 500/15
+P_COEFF = 5
+D_COEFF = 10
 #pid control variables
 last_dist = 0
 speed = 70
@@ -46,13 +48,18 @@ def get_closest(pos, path):
     """Returns Index of closest point on path"""
     dist = float('inf')
     ind = -1
-    path[0] = (float('inf'), float('inf'))
+    path.pop(0)
+    #path[0] = (float('inf'), float('inf'))
     for idx, i in enumerate(path):
         point_dist = distance(pos, path[idx])
         if point_dist < dist:
             dist = point_dist
             ind = idx
     return ind
+
+def pos2px(ind):
+    """converts passed arg to pixel location on display"""
+    return 500 - int(round((ind + 7.5)*DISP_CONV_FACTOR))
 
 
 def get_intersection(center, p1, p2):
@@ -133,6 +140,8 @@ def enhance_path(current_pos, path):
     while mag(diff) < LOOKAHEAD_DISTANCE*1.5:
         diff[0] += (dest[0] - current_pos[0])
         diff[1] += (dest[1] - current_pos[1])
+    print("pos: ", current_pos)
+    print("diff: ", diff)
     retpath.append([retpath[-1][0] + diff[0], retpath[-1][1] + diff[1]])
     return retpath
 
@@ -167,7 +176,7 @@ def pp_update(alti, pos, deg, path, time):
     frisbee_index = int(round(time/FRISBEE_TIMESTEP))
     if frisbee_index > len(path) - 1:
         frisbee_index = len(path - 1)
-    print("frisbee index:", frisbee_index, "car_index: ", car_index)
+    #print("frisbee index:", frisbee_index, "car_index: ", car_index)
     dist = distance(path[car_index], path[frisbee_index])
     if last_dist is not None:
         diff = dist - last_dist
@@ -178,10 +187,25 @@ def pp_update(alti, pos, deg, path, time):
     else:
         speed += dist*P_COEFF + diff*D_COEFF
     last_dist = dist
-    print("speed: ", speed)
-    print("dist: ", dist)
-    print("diff: ", diff)
+    #print("speed: ", speed)
+    #print("dist: ", dist)
+    #print("diff: ", diff)
+    print("dest: ", dest)
 
     radius = get_turning_radius(pos, la_point, deg)
     alti.set_steer(radius)
     alti.set_speed(speed)
+
+    # Update Visualization
+    alti.display.setColor(0x000000)
+    alti.display.fillRectangle(0, 0, 500, 500)
+    alti.display.setColor(0xFFFFFF)
+    alti.display.drawText("dest", pos2px(dest[0]) + 5, pos2px(dest[1]) + 5)
+    for count, val in enumerate(path):
+        alti.display.fillOval(pos2px(val[0]), pos2px(val[1]), 1, 1)
+    alti.display.setColor(0x00FF00)
+    alti.display.fillOval(pos2px(pos[0]), pos2px(pos[1]), 5, 5)
+    alti.display.drawText("Altino", pos2px(pos[0]) + 5, pos2px(pos[1]) + 5)
+    alti.display.setColor(0xFF0000)
+    alti.display.fillOval(pos2px(la_point[0]), pos2px(la_point[1]), 3, 3)
+    alti.display.drawText("lookahead point", pos2px(la_point[0]) + 5, pos2px(la_point[1]) + 5)

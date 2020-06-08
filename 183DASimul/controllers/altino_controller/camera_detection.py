@@ -39,7 +39,7 @@ def img_to_cart(img, row, col):
     return sph_to_cart(r, theta, phi)
 
 def cv_detect(altino, range_data):
-    """Update Computer Vision Display with new image"""
+    """Update Computer Vision Display with new image (deprecated)"""
     g_lower = np.array([20, 120, 20])
     g_upper = np.array([100, 255, 100])
     g_dark_lower = np.array([])
