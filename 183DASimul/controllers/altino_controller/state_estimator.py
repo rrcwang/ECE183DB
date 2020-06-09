@@ -97,7 +97,7 @@ class StateEstimator:
             apo_state_minus_eps = np.copy(prev_a_posteori_state)
             apo_state_minus_eps[i] -= eps
 
-            tt = np.linspace(0,0.007,8)
+            tt = np.linspace(0,0.001,2)
             self.disc.update_coordinates(apo_state_plus_eps)
             times, traj_plus = fp.get_trajectory(self.disc, tt, full_trajectory=True)
 
@@ -113,7 +113,7 @@ class StateEstimator:
                                      [0,0,0,0,0,0,0,0,1,0,0,0.001] ])
         jacobian[9:12,0:6] = np.zeros((3,6))
 
-        np.savetxt("f_jacobian.csv",jacobian,delimiter=',')
+        #np.savetxt("f_jacobian.csv",jacobian,delimiter=',')
 
         return np.array(jacobian)
 
@@ -124,12 +124,12 @@ class StateEstimator:
         #print(self.disc)
         #print("Predicting path for state:" + str(state))
         
-        tt = np.linspace(0,2,333)*6
+        tt = np.linspace(0,2,2001)
         times, traj = fp.get_trajectory(self.disc, tt, full_trajectory=False)
         
         traj = np.array(traj)
 
-        np.savetxt("projected.csv",traj,delimiter=',')
+        #np.savetxt("projected.csv",traj,delimiter=',')
 
         return np.column_stack((traj[:,0],traj[:,1]))
 
