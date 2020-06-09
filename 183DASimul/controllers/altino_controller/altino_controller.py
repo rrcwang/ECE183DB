@@ -10,7 +10,6 @@ import camera_detection as cd
 import numpy as np
 import pure_pursuit as pp
 import csv
-import cv2
 import convert_angles
 import sensor_model as sm
 
@@ -75,7 +74,7 @@ while alti.step(timestep) != -1:
     car_position  = (gps_data[0], gps_data[2]) 
     current_time += timestep
     
-    global frisbee_measurement
+    global frisbee_measurement, predicted_path, prev_path
     # process sensor data
     if frisbee_data is not None:
         xyz = frisbee_data.get_position()
@@ -121,12 +120,9 @@ while alti.step(timestep) != -1:
         #camera_status = altino.camera.saveImage('frame.png', 0)
         current_time += timestep
     
-        if current_time % 5 and alti.is_in_frame(frisbee_data):
-            try:
-                predicted_path = np.array(state_estimator.predict_path(SE_post)).tolist()
-                
-            except:
-                print("error: Path prediction error")
+        if (current_time % 5*32 == 0) or (current_time == 64):
+            predicted_path = np.array(state_estimator.predict_path(SE_post)).tolist()
+            prev_path = predicted_path
     else:
         print("error: Frisbee out of frame")
     
@@ -134,9 +130,8 @@ while alti.step(timestep) != -1:
     #path_raw = np.loadtxt('../frisbee_controller/position_data.csv', delimiter = ',')
     #path = np.delete(path_raw, 1, 1).tolist()
     
-    if frisbee_data is not None or current_time % 5:    
+    if (current_time % 5*32 == 0) or (current_time == 64):    
         path = predicted_path
-        prev_path = predicted_path        
     else:
         path = prev_path
     
