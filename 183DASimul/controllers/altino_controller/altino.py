@@ -151,7 +151,7 @@ class Altino(Robot):
         sensor"""
         pos = np.array(recognition_object.get_position_on_image())
 
-        if (pos[0] < tolerance) or (pos[1] < tolerance) or (1024-pos[0] > tolerance) or (1024-pos[1] > tolerance):
+        if (pos[0] < tolerance) or (pos[1] < tolerance) or (1024-pos[0] < tolerance) or (1024-pos[1] < tolerance):
             return False
 
         return True

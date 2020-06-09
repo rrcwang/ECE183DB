@@ -55,6 +55,7 @@ keyboard.enable(10)
 steer = 0
 current_time = 0
 is_collecting_data = True
+is_enhanced = False
 #path = pp.get_path()
 #path = pp.enhance_path([0, -4.2], path)
 pos = alti.gps.getValues() # get initial position
@@ -77,7 +78,7 @@ while alti.step(timestep) != -1:
     
     global frisbee_measurement, predicted_path, prev_path
     # process sensor data
-    if frisbee_data is not None and is_collecting_data is True:
+    if alti.is_in_frame(frisbee_data) is True and is_collecting_data is True:
         xyz = frisbee_data.get_position()
 
         # read orientations
@@ -124,11 +125,14 @@ while alti.step(timestep) != -1:
         if (current_time % 5*32 == 0) or (current_time == 64):
             predicted_path = np.array(state_estimator.predict_path(SE_post)).tolist()
             prev_path = predicted_path
+            has_enhanced = False
         else:
             predicted_path = prev_path
         
         path = predicted_path
-        path = pp.enhance_path(car_position, path)
+        if has_enhanced is False:
+            path = pp.enhance_path(car_position, path)
+            has_enhanced = True
         
         # Pure Pursuit Update
         pp.pp_update(alti, car_position, bearing, path, True)
@@ -150,7 +154,7 @@ while alti.step(timestep) != -1:
     #np.savetxt('pred_path.csv',predicted_path,delimiter=',')
     #print('path')
     #print(path)
-    path = pp.enhance_path((gps_data[0], gps_data[2]), path)
+    #path = pp.enhance_path((gps_data[0], gps_data[2]), path)
     
     # Pure Pursuit
     #pp.pp_update(alti, (gps_data[0], gps_data[2]), alti.get_bearing(), path, current_time/2)
