@@ -103,8 +103,8 @@ while alti.step(timestep) != -1:
         location_measurement = [gps_data[0]-xyz[0], gps_data[2]-xyz[1], gps_data[1]-xyz[2]+0.05]
         frisbee_measurement = location_measurement + frisbee_orientation_euler
         
-        print("Frisbee measurement:")
-        print(frisbee_measurement)
+        #print("Frisbee measurement:")
+        #print(frisbee_measurement)
         
         # state estimator
         state_estimator.dynamics_propagation()
@@ -114,8 +114,8 @@ while alti.step(timestep) != -1:
     
         state_estimator.measurement_update(frisbee_measurement)    
         SE_post = state_estimator.get_state().aslist()
-        print("A posteori state estimate: ")
-        print(SE_post)
+        #print("A posteori state estimate: ")
+        #print(SE_post)
     
         #print(state_estimator.get_P_covar())
         #np.savetxt("p_covar.csv",state_estimator.get_P_covar(),delimiter=',')
@@ -128,8 +128,10 @@ while alti.step(timestep) != -1:
         try:
             predicted_path = np.array(state_estimator.predict_path(SE_post)).tolist()
         except:
-            print("Path prediction error")
-       
+            print("error: Path prediction error")
+    else:
+        print("error: Frisbee out of frame")
+    
     # Read Path
     #path_raw = np.loadtxt('../frisbee_controller/position_data.csv', delimiter = ',')
     #path = np.delete(path_raw, 1, 1).tolist()

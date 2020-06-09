@@ -111,8 +111,9 @@ class StateEstimator:
         jacobian[6:9,:] = np.array([[0,0,0,0,0,0,1,0,0,0.001,0,0],
                                      [0,0,0,0,0,0,0,1,0,0,0.001,0],
                                      [0,0,0,0,0,0,0,0,1,0,0,0.001] ])
+        jacobian[9:12,0:6] = np.zeros((3,6))
 
-        np.savetxt("test.csv",jacobian,delimiter=',')
+        np.savetxt("f_jacobian.csv",jacobian,delimiter=',')
 
         return np.array(jacobian)
 
@@ -121,7 +122,7 @@ class StateEstimator:
         '''
         self.disc.update_coordinates(state)
         #print(self.disc)
-        print("Predicting path for state:" + str(state))
+        #print("Predicting path for state:" + str(state))
         
         tt = np.linspace(0,2,333)*6
         times, traj = fp.get_trajectory(self.disc, tt, full_trajectory=False)
