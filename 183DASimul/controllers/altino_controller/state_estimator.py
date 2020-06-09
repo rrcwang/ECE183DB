@@ -188,7 +188,7 @@ class StateEstimator:
 
         # compute Kalman gain
         kalman_gain = self.P_covar_estimate @ H_jacobian.transpose() @ S_inv
-        print(kalman_gain)
+        #print(kalman_gain)
         
         # update Kalman estimate and covariance estimate
         new_state_estimate = np.array(self.state_estimate.aslist()) + np.dot(kalman_gain, residuals)
