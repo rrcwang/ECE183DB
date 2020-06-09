@@ -149,12 +149,14 @@ class Altino(Robot):
     def is_in_frame(self,recognition_object,tolerance=100):
         """Checks whether the recognition_object is within the region of the camera
         sensor"""
-        pos = np.array(recognition_object.get_position_on_image())
-
-        if (pos[0] < tolerance) or (pos[1] < tolerance) or (1024-pos[0] < tolerance) or (1024-pos[1] < tolerance):
+        if recognition_object is None:
             return False
 
-        return True
+        pos = np.array(recognition_object.get_position_on_image())
+        if (pos[0] < tolerance) or (pos[1] < tolerance) or (1024-pos[0] < tolerance) or (1024-pos[1] < tolerance):
+            return False
+        else:
+            return True
     
 
 def distance(p1, p2):
