@@ -124,7 +124,7 @@ class StateEstimator:
         #print(self.disc)
         #print("Predicting path for state:" + str(state))
         
-        tt = np.linspace(0,2,2001)
+        tt = np.linspace(0,1,1001)
         times, traj = fp.get_trajectory(self.disc, tt, full_trajectory=False)
         
         traj = np.array(traj)
@@ -183,11 +183,12 @@ class StateEstimator:
         H_jacobian = A
         try:
             S_inv = np.linalg.inv(H_jacobian @ self.P_covar_estimate @ H_jacobian.transpose() + R_COVAR)
-        except LinAlgError:
-            print("BROKE")
+            # compute Kalman gain
+            kalman_gain = self.P_covar_estimate @ H_jacobian.transpose() @ S_inv
+        except np.linalg.LinAlgError:
+            print("Singular matrix error")
+            kalman_gain = np.zeros((6,6))
 
-        # compute Kalman gain
-        kalman_gain = self.P_covar_estimate @ H_jacobian.transpose() @ S_inv
         #print(kalman_gain)
         
         # update Kalman estimate and covariance estimate

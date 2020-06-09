@@ -27,6 +27,7 @@ scaling_factor = 0.2
 sim_times = np.linspace(0,N,N+1) * frisbee_timestep / 1000
 
 init_conditions = np.genfromtxt("init_conditions.csv").tolist()
+init_conditions[6:9] = [0,0,0]
 
 # generate flight path trajectory
 disc = FrisPy.create_disc(initial_conditions = init_conditions)
