@@ -179,7 +179,8 @@ def pp_update(alti, pos, deg, path, time):
     if frisbee_index > len(path) - 1:
         frisbee_index = len(path - 1)
     #print("frisbee index:", frisbee_index, "car_index: ", car_index)
-    dist = distance(path[car_index], path[frisbee_index])
+    fpos_estimate = path[frisbee_index]
+    dist = distance(path[car_index], fpos_estimate)
     if last_dist is not None:
         diff = dist - last_dist
     else:
@@ -219,3 +220,5 @@ def pp_update(alti, pos, deg, path, time):
     alti.display.drawText("lookahead point", pos2px(la_point[0]) + 5, pos2px(la_point[1]) + 5)
     la_radius_px = int(round(LOOKAHEAD_DISTANCE*500/15))
     alti.display.drawOval(pos2px(pos[0]), pos2px(pos[1]), la_radius_px, la_radius_px)
+    alti.display.setColor(0x0000FF)
+    alti.display.fillOval(pos2px(fpos_estimate[0]), pos2px(fpos_estimate[1]), 3, 3)
