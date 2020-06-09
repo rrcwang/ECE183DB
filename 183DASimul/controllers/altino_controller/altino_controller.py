@@ -55,7 +55,6 @@ keyboard = Keyboard()
 keyboard.enable(10)
 steer = 0
 current_time = 0
-is_collecting_data = True
 #path = pp.get_path()
 #path = pp.enhance_path([0, -4.2], path)
 pos = alti.gps.getValues() # get initial position
@@ -78,9 +77,9 @@ while alti.step(timestep) != -1:
     
     global frisbee_measurement
     # process sensor data
-    if frisbee_data is not None and is_collecting_data is True:
+    if frisbee_data is not None:
         xyz = frisbee_data.get_position()
-
+        
         # read orientations
         orientation = frisbee_data.get_orientation()
         car_rotation = [0,1,0,bearing]
@@ -122,34 +121,32 @@ while alti.step(timestep) != -1:
         #camera_status = altino.camera.saveImage('frame.png', 0)
         current_time += timestep
     
-        #if current_time % 1:
-        try:
-            predicted_path = np.array(state_estimator.predict_path(SE_post)).tolist()
-        except:
-            print("error: Path prediction error")
-        path = predicted_path
-        np.savetxt('pred_path.csv',predicted_path,delimiter=',')
-        path = pp.enhance_path(car_position, path)
-        
-        # Pure Pursuit Update
-        pp.pp_update(alti, car_position, bearing, path, True)
+        if current_time % 5 and alti.is_in_frame(frisbee_data):
+            try:
+                predicted_path = np.array(state_estimator.predict_path(SE_post)).tolist()
+                
+            except:
+                print("error: Path prediction error")
     else:
-        if is_collecting_data is True:
-            print("Frisbee out of frame, approaching goal")
-            path = pp.enhance_path(car_position, [path[-1]])
-            is_collecting_data = False
-        else:
-            path = pp.enhance_path(car_position, [path[-2]])
-        pp.pp_update(alti, car_position, bearing, path, False)
-        
+        print("error: Frisbee out of frame")
     
     # Read Path
     #path_raw = np.loadtxt('../frisbee_controller/position_data.csv', delimiter = ',')
     #path = np.delete(path_raw, 1, 1).tolist()
-
+    
+    if frisbee_data is not None or current_time % 5:    
+        path = predicted_path
+        prev_path = predicted_path        
+    else:
+        path = prev_path
+    
+    #np.savetxt('pred_path.csv',predicted_path,delimiter=',')
+    #print('path')
+    #print(path)
+    path = pp.enhance_path((gps_data[0], gps_data[2]), path)
     
     # Pure Pursuit
-    #pp.pp_update(alti, (gps_data[0], gps_data[2]), alti.get_bearing(), path, current_time/2)
+    pp.pp_update(alti, (gps_data[0], gps_data[2]), alti.get_bearing(), path, current_time/6)
     
     # Process sensor data here.
     log_gps_data(current_time, gps_data)

@@ -7,7 +7,7 @@ Q_COVAR[6,6] = Q_COVAR[6,6]*0.3
 Q_COVAR[7,7] = Q_COVAR[7,7]*0.3
 Q_COVAR[8,8] = Q_COVAR[8,8]*0.3
 
-R_COVAR = np.eye(6)*0
+R_COVAR = np.eye(6)*0.3
 
 class State:
     def __init__(self, x,y,z,dx,dy,dz,phi,theta,gamma,dphi,drho,dgamma):
