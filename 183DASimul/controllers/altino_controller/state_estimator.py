@@ -84,7 +84,7 @@ class StateEstimator:
 
         # Calculate discrete difference approximation for df/dx_dot and df/dtheta
         # Get machine epsilon, discrete different step size
-        eps = np.finfo(float).eps*100
+        eps = np.finfo(float).eps*100000
         #eps = 2.220446049250313e-14 # Epsilon chosen to be equal to the integrator's step size
         
         
@@ -104,14 +104,16 @@ class StateEstimator:
             self.disc.update_coordinates(apo_state_minus_eps)
             times, traj_minus = fp.get_trajectory(self.disc, tt, full_trajectory=True)
 
-
-            df_ds = (traj_plus[7] - traj_minus[7]) / (2*eps)
+            df_ds = (traj_plus[1] - traj_minus[1]) / (2*eps)
 
             jacobian[:,i] = df_ds
             
-        #jacobian[6,:] = np.array([[1,0,0]])
+        jacobian[6:9,:] = np.array([[0,0,0,0,0,0,1,0,0,0.001,0,0],
+                                     [0,0,0,0,0,0,0,1,0,0,0.001,0],
+                                     [0,0,0,0,0,0,0,0,1,0,0,0.001] ])
+        jacobian[9:12,0:6] = np.zeros((3,6))
 
-        np.savetxt("test.csv",jacobian,delimiter=',')
+        np.savetxt("f_jacobian.csv",jacobian,delimiter=',')
 
         return np.array(jacobian)
 
@@ -120,7 +122,7 @@ class StateEstimator:
         '''
         self.disc.update_coordinates(state)
         #print(self.disc)
-        print("Predicting path for state:" + str(state))
+        #print("Predicting path for state:" + str(state))
         
         tt = np.linspace(0,2,333)*6
         times, traj = fp.get_trajectory(self.disc, tt, full_trajectory=False)
@@ -186,7 +188,7 @@ class StateEstimator:
 
         # compute Kalman gain
         kalman_gain = self.P_covar_estimate @ H_jacobian.transpose() @ S_inv
-        print(kalman_gain)
+        #print(kalman_gain)
         
         # update Kalman estimate and covariance estimate
         new_state_estimate = np.array(self.state_estimate.aslist()) + np.dot(kalman_gain, residuals)

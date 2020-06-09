@@ -28,7 +28,7 @@ sim_times = np.linspace(0,N,N+1) * frisbee_timestep / 1000
 
 init_conditions = [ 0,      -4.2,       1,        # x, y, z
                     0,      5,          0,          # dx, dy, dz
-                    0.1,      0.2,       0,          # phi, theta, gamma
+                    0,      0,       0,          # phi, theta, gamma
                     0,      0,          15 ]        # phidot, thetadot, gammadot
 
 # generate flight path trajectory
