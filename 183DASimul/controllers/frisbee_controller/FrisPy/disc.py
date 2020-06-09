@@ -225,7 +225,7 @@ class Disc(object):
     torque_x = C_x*torque_amplitude*self.xbhat
     torque_y = C_y*torque_amplitude*self.ybhat
     torque_z = C_z*torque_amplitude*np.array([0,0,1.])
-    print(torque_x+torque_y+torque_z)
+    #print(torque_x+torque_y+torque_z)
     #Rotate into the disc frame.
     total_torque=np.dot(self.rotation_matrix,torque_x+torque_y)+torque_z
     #Optional: turn off rotations

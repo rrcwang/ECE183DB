@@ -2,14 +2,12 @@ import numpy as np
 import numpy.linalg as linalg
 import FrisPy as fp
 
-scaling_factor = 0.2
-
 Q_COVAR = np.eye(12)*0.2
 Q_COVAR[6,6] = Q_COVAR[6,6]*0.3
 Q_COVAR[7,7] = Q_COVAR[7,7]*0.3
 Q_COVAR[8,8] = Q_COVAR[8,8]*0.3
 
-R_COVAR = np.eye(6)*0.05
+R_COVAR = np.eye(6)*0
 
 class State:
     def __init__(self, x,y,z,dx,dy,dz,phi,theta,gamma,dphi,drho,dgamma):
@@ -86,8 +84,8 @@ class StateEstimator:
 
         # Calculate discrete difference approximation for df/dx_dot and df/dtheta
         # Get machine epsilon, discrete different step size
-        # eps = np.finfo(float).eps*100000000
-        eps = 2.220446049250313e-08 # Epsilon chosen to be equal to the integrator's step size
+        eps = np.finfo(float).eps*100
+        #eps = 2.220446049250313e-14 # Epsilon chosen to be equal to the integrator's step size
         
         
         jacobian = np.empty((12,12))
@@ -96,13 +94,22 @@ class StateEstimator:
             apo_state_plus_eps = np.copy(prev_a_posteori_state)
             apo_state_plus_eps[i] += eps
 
+            apo_state_minus_eps = np.copy(prev_a_posteori_state)
+            apo_state_minus_eps[i] -= eps
+
+            tt = np.linspace(0,0.007,8)
             self.disc.update_coordinates(apo_state_plus_eps)
-            tt = np.linspace(0,0.006,7)
-            times, traj = fp.get_trajectory(self.disc, tt, full_trajectory=True)
-        
-            df_ds = (traj[6] - a_priori_state) / eps
+            times, traj_plus = fp.get_trajectory(self.disc, tt, full_trajectory=True)
+
+            self.disc.update_coordinates(apo_state_minus_eps)
+            times, traj_minus = fp.get_trajectory(self.disc, tt, full_trajectory=True)
+
+
+            df_ds = (traj_plus[7] - traj_minus[7]) / (2*eps)
 
             jacobian[:,i] = df_ds
+            
+        #jacobian[6,:] = np.array([[1,0,0]])
 
         np.savetxt("test.csv",jacobian,delimiter=',')
 
@@ -111,15 +118,18 @@ class StateEstimator:
     def predict_path(self,state):
         ''' Given some state, project the path forward by 2 seconds
         '''
-        self.disc.update_coordinates(self.state_estimate.aslist())
-        tt = np.linspace(0,2,2001)*6
-        times, traj = fp.get_trajectory(self.disc, tt, full_trajectory=True)
+        self.disc.update_coordinates(state)
+        #print(self.disc)
+        print("Predicting path for state:" + str(state))
         
-        traj = np.array(traj)*scaling_factor
+        tt = np.linspace(0,2,333)*6
+        times, traj = fp.get_trajectory(self.disc, tt, full_trajectory=False)
+        
+        traj = np.array(traj)
 
         np.savetxt("projected.csv",traj,delimiter=',')
 
-        return list(np.column_stack((traj[:,0],traj[:,1])))
+        return np.column_stack((traj[:,0],traj[:,1]))
 
     def dynamics_propagation(self):
         ''' Find the a priori state estimate given the previous a posteori state 
@@ -152,7 +162,7 @@ class StateEstimator:
         if not self.SE_is_a_priori:
             raise Exception("Steps computed out of order: measurement_update was called when dynamics_propogation was expected.")
 
-        pos_measurement = measurement[0:2] * 5
+        #pos_measurement = measurement[0:3]
         
         # format predicted measurement
         SE = np.array(self.state_estimate.aslist())
@@ -166,14 +176,17 @@ class StateEstimator:
 
         # compute residuals
         residuals = np.array(measurement) - predicted_measurement
-
+        
         # compute residual covariance
         H_jacobian = A
-        S_inv = np.linalg.inv(H_jacobian @ self.P_covar_estimate @ H_jacobian.transpose() + R_COVAR)
-
+        try:
+            S_inv = np.linalg.inv(H_jacobian @ self.P_covar_estimate @ H_jacobian.transpose() + R_COVAR)
+        except LinAlgError:
+            print("BROKE")
 
         # compute Kalman gain
         kalman_gain = self.P_covar_estimate @ H_jacobian.transpose() @ S_inv
+        print(kalman_gain)
         
         # update Kalman estimate and covariance estimate
         new_state_estimate = np.array(self.state_estimate.aslist()) + np.dot(kalman_gain, residuals)
@@ -187,6 +200,6 @@ class StateEstimator:
 
     def get_P_covar(self):
         return self.P_covar_estimate
-
+    
     def get_error_magnitude(self):
         return linalg.norm(self.P_covar_estimate)

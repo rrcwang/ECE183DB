@@ -27,14 +27,14 @@ ground_offset = 0.25
 sim_times = np.linspace(0,N,N+1) * frisbee_timestep / 1000
 
 init_conditions = [ 0,      -4.2,       1,        # x, y, z
-                    0,      7,          0,          # dx, dy, dz
-                    0,      0,       0,          # phi, theta, gamma
-                    0,      0,          100 ]       # phidot, thetadot, gammadot
+                    0,      5,          0,          # dx, dy, dz
+                    0.1,      0.2,       0,          # phi, theta, gamma
+                    0,      0,          15 ]        # phidot, thetadot, gammadot
 
 # generate flight path trajectory
 disc = FrisPy.create_disc(initial_conditions = init_conditions)
 times, trajectory = FrisPy.get_trajectory(disc, full_trajectory=True, times=sim_times) #times = sim_times, 
-position_data = trajectory[:,0:3] * scaling_factor
+position_data = trajectory[:,0:3]# * scaling_factor
 
 # format position and rotation data
 position_data = trajectory[:,0:3]
@@ -69,7 +69,7 @@ while supervisor.step(timestep) != -1:
             rotation = rotation_data[time_index,:].tolist()
             rotation_field.setSFRotation(rotation)
 
-            print(trajectory[time_index,:])
+            #print(trajectory[time_index,:])
             
             time_index += 1
     except(IndexError):
