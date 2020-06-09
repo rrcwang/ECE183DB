@@ -132,15 +132,15 @@ while alti.step(timestep) != -1:
         path = pp.enhance_path(car_position, path)
         
         # Pure Pursuit Update
-        pp.pp_update(alti, car_position, alti.get_bearing(), path, True)
+        pp.pp_update(alti, car_position, bearing, path, True)
     else:
         if is_collecting_data is True:
             print("Frisbee out of frame, approaching goal")
-            path = pp.enhance_path(car_position, [path[-1], path[-1]])
+            path = pp.enhance_path(car_position, [path[-1]])
             is_collecting_data = False
         else:
-            path = pp.enhance_path(car_position, [path[-2], path[-2]])
-        pp.pp_update(alti, car_position, alti.get_bearing(), path, False)
+            path = pp.enhance_path(car_position, [path[-2]])
+        pp.pp_update(alti, car_position, bearing, path, False)
         
     
     # Read Path
