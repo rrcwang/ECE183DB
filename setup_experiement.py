@@ -15,4 +15,4 @@ init_cond = [   0,      -4.2,   1,          # x, y, z
                 roll,   pitch,  0,     # phi, theta, gamma
                 0,      0,      15 ]
 
-np.savetxt("controllers/frisbee_controller/init_conditions.csv",init_cond,delimiter=',')
+np.savetxt("183DASimul/controllers/frisbee_controller/init_conditions.csv",init_cond,delimiter=',')
