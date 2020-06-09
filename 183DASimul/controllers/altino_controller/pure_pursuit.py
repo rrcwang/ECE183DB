@@ -169,7 +169,9 @@ def pp_update(alti, pos, deg, path, time):
         if point is not None:
             la_point = point
     if la_point is None:
-        la_point = pos + (1, 0)
+        # Wait for lookahead point
+        alti.set_steer(float('inf'))
+        alti.set_speed(0)
 
     # Calculate speed based on parameterized frisbee path
     car_index = get_closest(pos, path)
@@ -201,11 +203,19 @@ def pp_update(alti, pos, deg, path, time):
     alti.display.fillRectangle(0, 0, 500, 500)
     alti.display.setColor(0xFFFFFF)
     alti.display.drawText("dest", pos2px(dest[0]) + 5, pos2px(dest[1]) + 5)
+    alti.display.drawText("speed: " + str(speed), 10, 480)
+    alti.display.drawText("turning radius: " + str(radius), 10, 460)
+    last_point = None
     for count, val in enumerate(path):
         alti.display.fillOval(pos2px(val[0]), pos2px(val[1]), 1, 1)
+        if last_point is not None:
+            alti.display.drawLine(pos2px(val[0]), pos2px(val[1]), pos2px(last_point[0]), pos2px(last_point[1]))
+        last_point = val
     alti.display.setColor(0x00FF00)
     alti.display.fillOval(pos2px(pos[0]), pos2px(pos[1]), 5, 5)
     alti.display.drawText("Altino", pos2px(pos[0]) + 5, pos2px(pos[1]) + 5)
     alti.display.setColor(0xFF0000)
     alti.display.fillOval(pos2px(la_point[0]), pos2px(la_point[1]), 3, 3)
     alti.display.drawText("lookahead point", pos2px(la_point[0]) + 5, pos2px(la_point[1]) + 5)
+    la_radius_px = int(round(LOOKAHEAD_DISTANCE*500/15))
+    alti.display.drawOval(pos2px(pos[0]), pos2px(pos[1]), la_radius_px, la_radius_px)
