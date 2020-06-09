@@ -175,11 +175,12 @@ def pp_update(alti, pos, deg, path, time):
 
     # Calculate speed based on parameterized frisbee path
     car_index = get_closest(pos, path)
-    frisbee_index = int(round(time/FRISBEE_TIMESTEP))
-    if frisbee_index > len(path) - 1:
-        frisbee_index = len(path - 1)
+    frisbee_index = 1
+    #frisbee_index = int(round(time/FRISBEE_TIMESTEP))
+    #if frisbee_index > len(path) - 1:
+    #    frisbee_index = len(path - 1)
     #print("frisbee index:", frisbee_index, "car_index: ", car_index)
-    fpos_estimate = path[frisbee_index]
+    fpos_estimate = path[1]
     dist = distance(path[car_index], fpos_estimate)
     if last_dist is not None:
         diff = dist - last_dist
