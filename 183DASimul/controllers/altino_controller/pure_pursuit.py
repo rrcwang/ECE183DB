@@ -3,12 +3,12 @@ import numpy as np
 import math
 import csv
 
-LOOKAHEAD_DISTANCE = 0.4
+LOOKAHEAD_DISTANCE = 0.6
 THRESHOLD_DISTANCE = 0.15
 FRISBEE_TIMESTEP = 32
 DISP_CONV_FACTOR = 500/15
-P_COEFF = 5
-D_COEFF = 10
+P_COEFF = 1
+D_COEFF = 1
 #pid control variables
 last_dist = 0
 speed = 70
@@ -140,12 +140,12 @@ def enhance_path(current_pos, path):
     while mag(diff) < LOOKAHEAD_DISTANCE*1.5:
         diff[0] += (dest[0] - current_pos[0])
         diff[1] += (dest[1] - current_pos[1])
-    print("pos: ", current_pos)
-    print("diff: ", diff)
+    #print("pos: ", current_pos)
+    #print("diff: ", diff)
     retpath.append([retpath[-1][0] + diff[0], retpath[-1][1] + diff[1]])
     return retpath
 
-def pp_update(alti, pos, deg, path, time):
+def pp_update(alti, pos, deg, path, use_pid):
     """Pure pursuit update. Takes the position of the robot,
     its bearing and a path (list of xz points) and sets its
     turning radius and speed. It his highly recommended to
@@ -153,6 +153,7 @@ def pp_update(alti, pos, deg, path, time):
     the path. Path must be enhanced with enhane_path()"""
     global speed, last_dist
     la_point = None
+    fpos_estimate = None
     pth = path
     dest = pth[-2]
 
@@ -173,28 +174,30 @@ def pp_update(alti, pos, deg, path, time):
         alti.set_steer(float('inf'))
         alti.set_speed(0)
 
-    # Calculate speed based on parameterized frisbee path
-    car_index = get_closest(pos, path)
-    frisbee_index = 1
-    #frisbee_index = int(round(time/FRISBEE_TIMESTEP))
-    #if frisbee_index > len(path) - 1:
-    #    frisbee_index = len(path - 1)
-    #print("frisbee index:", frisbee_index, "car_index: ", car_index)
-    fpos_estimate = path[1]
-    dist = distance(path[car_index], fpos_estimate)
-    if last_dist is not None:
-        diff = dist - last_dist
+    if use_pid is True:
+        # Calculate speed based on parameterized frisbee path
+        car_index = get_closest(pos, path)
+        #frisbee_index = int(round(time/FRISBEE_TIMESTEP))
+        #if frisbee_index > len(path) - 1:
+        #    frisbee_index = len(path - 1)
+        #print("frisbee index:", frisbee_index, "car_index: ", car_index)
+        fpos_estimate = path[1]
+        dist = distance(path[car_index], fpos_estimate)
+        if last_dist is not None:
+            diff = dist - last_dist
+        else:
+            diff = 0
+        if car_index > 1:
+            speed -= dist*P_COEFF + diff*D_COEFF
+        else:
+            speed += dist*P_COEFF + diff*D_COEFF
+        last_dist = dist
+        #print("speed: ", speed)
+        #print("dist: ", dist)
+        #print("diff: ", diff)
+        #print("dest: ", dest)
     else:
-        diff = 0
-    if car_index > frisbee_index:
-        speed -= dist*P_COEFF + diff*D_COEFF
-    else:
-        speed += dist*P_COEFF + diff*D_COEFF
-    last_dist = dist
-    #print("speed: ", speed)
-    #print("dist: ", dist)
-    #print("diff: ", diff)
-    print("dest: ", dest)
+        speed = 40
 
     radius = get_turning_radius(pos, la_point, deg)
     alti.set_steer(radius)
@@ -222,4 +225,5 @@ def pp_update(alti, pos, deg, path, time):
     la_radius_px = int(round(LOOKAHEAD_DISTANCE*500/15))
     alti.display.drawOval(pos2px(pos[0]), pos2px(pos[1]), la_radius_px, la_radius_px)
     alti.display.setColor(0x0000FF)
-    alti.display.fillOval(pos2px(fpos_estimate[0]), pos2px(fpos_estimate[1]), 3, 3)
+    if fpos_estimate is not None:
+        alti.display.fillOval(pos2px(fpos_estimate[0]), pos2px(fpos_estimate[1]), 3, 3)

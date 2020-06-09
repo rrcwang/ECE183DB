@@ -54,6 +54,7 @@ keyboard = Keyboard()
 keyboard.enable(10)
 steer = 0
 current_time = 0
+is_collecting_data = True
 #path = pp.get_path()
 #path = pp.enhance_path([0, -4.2], path)
 pos = alti.gps.getValues() # get initial position
@@ -82,7 +83,7 @@ while alti.step(timestep) != -1:
     
     global frisbee_measurement
     # process sensor data
-    if frisbee_data is not None:
+    if frisbee_data is not None and is_collecting_data is True:
         xyz = frisbee_data.get_position()
 
         # read orientations
@@ -129,20 +130,29 @@ while alti.step(timestep) != -1:
             predicted_path = np.array(state_estimator.predict_path(SE_post)).tolist()
         except:
             print("error: Path prediction error")
+        path = predicted_path
+        np.savetxt('pred_path.csv',predicted_path,delimiter=',')
+        path = pp.enhance_path(car_position, path)
+        
+        # Pure Pursuit Update
+        pp.pp_update(alti, car_position, alti.get_bearing(), path, True)
     else:
-        print("error: Frisbee out of frame")
+        if is_collecting_data is True:
+            print("Frisbee out of frame, approaching goal")
+            path = pp.enhance_path(car_position, [path[-1], path[-1]])
+            is_collecting_data = False
+        else:
+            path = pp.enhance_path(car_position, [path[-2], path[-2]])
+        pp.pp_update(alti, car_position, alti.get_bearing(), path, False)
+        
     
     # Read Path
     #path_raw = np.loadtxt('../frisbee_controller/position_data.csv', delimiter = ',')
     #path = np.delete(path_raw, 1, 1).tolist()
-    path = predicted_path
-    np.savetxt('pred_path.csv',predicted_path,delimiter=',')
-    #print('path')
-    #print(path)
-    path = pp.enhance_path((gps_data[0], gps_data[2]), path)
+
     
     # Pure Pursuit
-    pp.pp_update(alti, (gps_data[0], gps_data[2]), alti.get_bearing(), path, current_time/2)
+    #pp.pp_update(alti, (gps_data[0], gps_data[2]), alti.get_bearing(), path, current_time/2)
     
     # Process sensor data here.
     log_gps_data(current_time, gps_data)
