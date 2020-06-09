@@ -60,7 +60,7 @@ pos = alti.gps.getValues() # get initial position
 
 initial_state_guess = [ 0,      -4.2,       1,        # x, y, z
                     0,      5,          0,          # dx, dy, dz
-                    0.1,      0.2,       0,          # phi, theta, gamma
+                    0,      0,       0,          # phi, theta, gamma
                     0,      0,          15 ]  
 alti.initialize_state_estimator(initial_state_guess)
 state_estimate = initial_state_guess
@@ -106,30 +106,30 @@ while alti.step(timestep) != -1:
         print("Frisbee measurement:")
         print(frisbee_measurement)
         
-    # state estimator
-    state_estimator.dynamics_propagation()
-
-    #print("A priori state estimate: ")
-    #print(state_estimator.get_state().aslist())
-
-    state_estimator.measurement_update(frisbee_measurement)    
-    SE_post = state_estimator.get_state().aslist()
-    print("A posteori state estimate: ")
-    print(SE_post)
-
-    #print(state_estimator.get_P_covar())
-    #np.savetxt("p_covar.csv",state_estimator.get_P_covar(),delimiter=',')
-
-    #altino.camera.getImage()
-    #camera_status = altino.camera.saveImage('frame.png', 0)
-    current_time += timestep
-
-    #if current_time % 1:
-    try:
-        predicted_path = np.array(state_estimator.predict_path(SE_post)).tolist()
-    except:
-        print("Path prediction error")
-        
+        # state estimator
+        state_estimator.dynamics_propagation()
+    
+        #print("A priori state estimate: ")
+        #print(state_estimator.get_state().aslist())
+    
+        state_estimator.measurement_update(frisbee_measurement)    
+        SE_post = state_estimator.get_state().aslist()
+        print("A posteori state estimate: ")
+        print(SE_post)
+    
+        #print(state_estimator.get_P_covar())
+        #np.savetxt("p_covar.csv",state_estimator.get_P_covar(),delimiter=',')
+    
+        #altino.camera.getImage()
+        #camera_status = altino.camera.saveImage('frame.png', 0)
+        current_time += timestep
+    
+        #if current_time % 1:
+        try:
+            predicted_path = np.array(state_estimator.predict_path(SE_post)).tolist()
+        except:
+            print("Path prediction error")
+       
     # Read Path
     #path_raw = np.loadtxt('../frisbee_controller/position_data.csv', delimiter = ',')
     #path = np.delete(path_raw, 1, 1).tolist()
