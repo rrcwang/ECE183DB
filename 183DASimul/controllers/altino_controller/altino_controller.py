@@ -12,6 +12,7 @@ import pure_pursuit as pp
 import csv
 import cv2
 import convert_angles
+import sensor_model as sm
 
 def log_gps_data(time, vector):
     with open('gps_log.csv', 'a', newline='') as file:
@@ -58,16 +59,10 @@ current_time = 0
 #path = pp.enhance_path([0, -4.2], path)
 pos = alti.gps.getValues() # get initial position
 
-initial_state_guess = [ 0,      -4.2,       1,        # x, y, z
-                    0,      5,          0,          # dx, dy, dz
-                    0,      0,       0,          # phi, theta, gamma
-                    0,      0,          15 ]  
+initial_state_guess = np.genfromtxt("../frisbee_controller/init_conditions.csv").tolist()
 alti.initialize_state_estimator(initial_state_guess)
 state_estimate = initial_state_guess
 state_estimator = alti.getSE()
-
-print("ASD")
-
 
 # Main loop:
 # - perform simulation steps until Webots is stopping the controller
@@ -103,6 +98,8 @@ while alti.step(timestep) != -1:
         location_measurement = [gps_data[0]-xyz[0], gps_data[2]-xyz[1], gps_data[1]-xyz[2]+0.05]
         frisbee_measurement = location_measurement + frisbee_orientation_euler
         
+        frisbee_measurement = sm.add_noise(frisbee_measurement)
+        
         #print("Frisbee measurement:")
         #print(frisbee_measurement)
         
@@ -136,13 +133,13 @@ while alti.step(timestep) != -1:
     #path_raw = np.loadtxt('../frisbee_controller/position_data.csv', delimiter = ',')
     #path = np.delete(path_raw, 1, 1).tolist()
     path = predicted_path
-    np.savetxt('pred_path.csv',predicted_path,delimiter=',')
+    #np.savetxt('pred_path.csv',predicted_path,delimiter=',')
     #print('path')
     #print(path)
     path = pp.enhance_path((gps_data[0], gps_data[2]), path)
     
     # Pure Pursuit
-    pp.pp_update(alti, (gps_data[0], gps_data[2]), alti.get_bearing(), path, current_time/2)
+    pp.pp_update(alti, (gps_data[0], gps_data[2]), alti.get_bearing(), path, current_time/6)
     
     # Process sensor data here.
     log_gps_data(current_time, gps_data)

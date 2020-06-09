@@ -23,13 +23,10 @@ rotation_field = frisbee_node.getField("rotation")
 frisbee_timestep = 6
 N = 1000
 scaling_factor = 0.2
-ground_offset = 0.25
+
 sim_times = np.linspace(0,N,N+1) * frisbee_timestep / 1000
 
-init_conditions = [ 0,      -4.2,       1,        # x, y, z
-                    0,      5,          0,          # dx, dy, dz
-                    0,      0,       0,          # phi, theta, gamma
-                    0,      0,          15 ]        # phidot, thetadot, gammadot
+init_conditions = np.genfromtxt("init_conditions.csv").tolist()
 
 # generate flight path trajectory
 disc = FrisPy.create_disc(initial_conditions = init_conditions)
@@ -45,7 +42,6 @@ position_data[:,1] = swap_col
 #swap_cols = np.copy(position_data[:,0:2])
 #position_data[:,0] = position_data[:,2]
 #position_data[:,1:3] = swap_cols
-position_data[:,1] += 0.025
 
 # position data
 np.savetxt("position_data.csv",position_data,delimiter=',')
