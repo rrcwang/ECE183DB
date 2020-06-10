@@ -223,6 +223,7 @@ def pp_update(alti, pos, deg, path, use_pid):
     alti.display.drawText("lookahead point", pos2px(la_point[0]) + 5, pos2px(la_point[1]) + 5)
     la_radius_px = int(round(LOOKAHEAD_DISTANCE*500/15))
     alti.display.drawOval(pos2px(pos[0]), pos2px(pos[1]), la_radius_px, la_radius_px)
-    alti.display.setColor(0x0000FF)
+    alti.display.setColor(0x00FFFF)
     if fpos_estimate is not None:
         alti.display.fillOval(pos2px(fpos_estimate[0]), pos2px(fpos_estimate[1]), 3, 3)
+        alti.display.drawText("Frisbee Estimate", pos2px(fpos_estimate[0]) - 100, pos2px(fpos_estimate[1]))
