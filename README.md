@@ -12,11 +12,11 @@ Created by Richard W., Timothy L., and Christian Yu for the UCLA ECE183DB Capsto
 
 ## Installation:
 0. Clone and download this repo
-1. Download and run Webots 
-
+1. Download and run Webots. If everything is working, you should see something like this:
+![alt text][logo]  
+[logo]: 1 "Logo Title Text 2"  
 2. If on a **Windows OS**, download the Microsoft C++ Build Tools:
   * It is not necessary to install any of the other packages available in the installer.
-
 3. Download and install Python 3
 4. Install required packages:
   * In a command console in the root directory
@@ -30,6 +30,7 @@ python -m pip install requirements.txt
     * Each input should be a number
 
 2. Open `183DASimul.wbt` under .\183DASimul\worlds
+3. Hit the play button on the 
 
 
 
