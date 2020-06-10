@@ -11,10 +11,12 @@ Created by Richard W., Timothy L., and Christian Yu for the UCLA ECE183DB Capsto
   * numpy-quaternion
 
 ## Installation:
-0. Clone and download this repo
+0. Clone and download this repo.
 1. Download and run Webots. If everything is working, you should see something like this:
+
 ![alt text][logo]  
 [logo]: 1 "Logo Title Text 2"  
+
 2. If on a **Windows OS**, download the Microsoft C++ Build Tools:
   * It is not necessary to install any of the other packages available in the installer.
 3. Download and install Python 3
