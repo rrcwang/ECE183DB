@@ -139,7 +139,7 @@ while alti.step(timestep) != -1:
     else:
         if is_collecting_data is True:
             print("Frisbee out of frame, approaching goal")
-            path = pp.enhance_path(car_position, [path[-1]])
+            path = pp.enhance_path(car_position, [path[-2]])
             is_collecting_data = False
         else:
             path = pp.enhance_path(car_position, [path[-2]])
