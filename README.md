@@ -16,8 +16,7 @@ Created by Richard W., Timothy L., and Christian Yu for the UCLA ECE183DB Capsto
 1. Clone and download this repo.
 2. Download and run Webots. If everything is working, you should see something like this:
 
-![alt text][visualizer]  
-[visualizer]: https://github.com/rrcwang/ECE183DB-Project/blob/master/photos/visualizer.png "Logo Title Text 2"  
+![visualizer](https://github.com/rrcwang/ECE183DB-Project/blob/master/photos/visualizer.png)
 
 3. If on a **Windows OS**, download the Microsoft C++ Build Tools:
   1. It is not necessary to install any of the other packages available in the installer.
