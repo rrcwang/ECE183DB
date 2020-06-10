@@ -107,7 +107,9 @@ class StateEstimator:
             df_ds = (traj_plus[1] - traj_minus[1]) / (2*eps)
 
             jacobian[:,i] = df_ds
-            
+        
+        
+
         jacobian[6:9,:] = np.array([[0,0,0,0,0,0,1,0,0,0.001,0,0],
                                      [0,0,0,0,0,0,0,1,0,0,0.001,0],
                                      [0,0,0,0,0,0,0,0,1,0,0,0.001] ])
