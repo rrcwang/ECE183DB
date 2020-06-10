@@ -146,7 +146,7 @@ class Altino(Robot):
     def getSE(self):
         return self.state_estimator
 
-    def is_in_frame(self,recognition_object,tolerance=100):
+    def is_in_frame(self,recognition_object,tolerance=90):
         """Checks whether the recognition_object is within the region of the camera
         sensor"""
         if recognition_object is None:

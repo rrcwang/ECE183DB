@@ -80,8 +80,6 @@ class StateEstimator:
         time_step = 0.001
         DT = time_step
 
-        x,y,z,dx,dy,dz,phi,theta,gamma,dphi,dtheta,dgamma = prev_a_posteori_state
-
         # Calculate discrete difference approximation for df/dx_dot and df/dtheta
         # Get machine epsilon, discrete different step size
         eps = np.finfo(float).eps*100000
@@ -97,8 +95,6 @@ class StateEstimator:
             apo_state_minus_eps = np.copy(prev_a_posteori_state)
             apo_state_minus_eps[i] -= eps
 
-            print(apo_state_minus_eps)
-
             tt = np.linspace(0,0.006,2)
             self.disc.update_coordinates(apo_state_plus_eps)
             times, traj_plus = fp.get_trajectory(self.disc, tt, full_trajectory=True)
@@ -110,8 +106,9 @@ class StateEstimator:
 
             jacobian[:,i] = df_ds
         
+        # Analytically fill in the rest
         b = np.copy(jacobian[9:,7])
-        jacobian[9:,7] = [0,0,0]
+        jacobian[9:,7] = b / linalg.norm(b)
 
         jacobian[6:9,:] = np.array([[0,0,0,0,0,0,1,0,0,0.006,0,0],
                                      [0,0,0,0,0,0,0,1,0,0,0.006,0],
@@ -176,6 +173,7 @@ class StateEstimator:
         A = np.eye(12)
         predicted_measurement = A @ SE
 
+        SE[4] = SE[4] + 0.15
 
         z = measurement[0:3] + list(SE)[3:6] + measurement[3:] + list(SE)[9:]
 
