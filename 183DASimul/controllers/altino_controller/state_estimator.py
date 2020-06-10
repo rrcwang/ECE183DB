@@ -7,7 +7,7 @@ Q_COVAR[6,6] = Q_COVAR[6,6]*0.3
 Q_COVAR[7,7] = Q_COVAR[7,7]*0.3
 Q_COVAR[8,8] = Q_COVAR[8,8]*0.3
 
-R_COVAR = np.eye(6)*0.3
+R_COVAR = np.eye(12)*0.3
 
 class State:
     def __init__(self, x,y,z,dx,dy,dz,phi,theta,gamma,dphi,drho,dgamma):
@@ -97,7 +97,9 @@ class StateEstimator:
             apo_state_minus_eps = np.copy(prev_a_posteori_state)
             apo_state_minus_eps[i] -= eps
 
-            tt = np.linspace(0,0.001,2)
+            print(apo_state_minus_eps)
+
+            tt = np.linspace(0,0.006,2)
             self.disc.update_coordinates(apo_state_plus_eps)
             times, traj_plus = fp.get_trajectory(self.disc, tt, full_trajectory=True)
 
@@ -108,14 +110,15 @@ class StateEstimator:
 
             jacobian[:,i] = df_ds
         
-        
+        b = np.copy(jacobian[9:,7])
+        jacobian[9:,7] = [0,0,0]
 
-        jacobian[6:9,:] = np.array([[0,0,0,0,0,0,1,0,0,0.001,0,0],
-                                     [0,0,0,0,0,0,0,1,0,0,0.001,0],
-                                     [0,0,0,0,0,0,0,0,1,0,0,0.001] ])
+        jacobian[6:9,:] = np.array([[0,0,0,0,0,0,1,0,0,0.006,0,0],
+                                     [0,0,0,0,0,0,0,1,0,0,0.006,0],
+                                     [0,0,0,0,0,0,0,0,1,0,0,0.006] ])
         jacobian[9:12,0:6] = np.zeros((3,6))
 
-        #np.savetxt("f_jacobian.csv",jacobian,delimiter=',')
+        np.savetxt("f_jacobian.csv",jacobian,delimiter=',')
 
         return np.array(jacobian)
 
@@ -126,7 +129,7 @@ class StateEstimator:
         #print(self.disc)
         #print("Predicting path for state:" + str(state))
         
-        tt = np.linspace(0,1,1001)
+        tt = np.linspace(0,1.002,168)
         times, traj = fp.get_trajectory(self.disc, tt, full_trajectory=False)
         
         traj = np.array(traj)
@@ -170,16 +173,14 @@ class StateEstimator:
         
         # format predicted measurement
         SE = np.array(self.state_estimate.aslist())
-        A = np.array([[ 1,0,0,0,0,0,0,0,0,0,0,0 ],
-                      [ 0,1,0,0,0,0,0,0,0,0,0,0 ], 
-                      [ 0,0,1,0,0,0,0,0,0,0,0,0 ], 
-                      [ 0,0,0,0,0,0,1,0,0,0,0,0 ], 
-                      [ 0,0,0,0,0,0,0,1,0,0,0,0 ], 
-                      [ 0,0,0,0,0,0,0,0,1,0,0,0 ]] )
+        A = np.eye(12)
         predicted_measurement = A @ SE
 
+
+        z = measurement[0:3] + list(SE)[3:6] + measurement[3:] + list(SE)[9:]
+
         # compute residuals
-        residuals = np.array(measurement) - predicted_measurement
+        residuals = np.array(z) - predicted_measurement
         
         # compute residual covariance
         H_jacobian = A
@@ -189,7 +190,7 @@ class StateEstimator:
             kalman_gain = self.P_covar_estimate @ H_jacobian.transpose() @ S_inv
         except np.linalg.LinAlgError:
             print("Singular matrix error")
-            kalman_gain = np.zeros((6,6))
+            kalman_gain = np.zeros((12,12))
 
         #print(kalman_gain)
         
